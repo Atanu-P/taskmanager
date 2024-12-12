@@ -8,7 +8,43 @@
 </head>
 
 <body>
+    <h1>Task Manager</h1>
+    <h2>Welcome, <span id="username">Demo</span></h2>
+    <button id="logout">Logout</button>
 
+    <h3>Add Task</h3>
+    <form action="" id="taskForm">
+        <label for="title">Task Title:</label>
+        <input type="text" id="title" required>
+        <br>
+
+        <label for="description">Task description:</label>
+        <textarea name="" id="description"></textarea>
+        <br>
+
+        <button type="submit">Add Task</button>
+    </form>
+    <br>
+    <h3>Task list</h3>
+    <ul id="taskList">
+        <li>task 1</li>
+        <li>task 2</li>
+        <li>task 3</li>
+    </ul>
+
+    <script>
+        if (document.getElementById('taskForm')) {
+            const taskForm = document.getElementById('taskForm')
+            taskForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const title = document.getElementById('title').value;
+                const description = document.getElementById('description').value;
+
+                console.log(title, description);
+
+            })
+        }
+    </script>
 </body>
 
 </html>

@@ -8,7 +8,33 @@
 </head>
 
 <body>
+    <h1>Task Manager - Login</h1>
 
+    <form action="" id="loginForm">
+        <Label for="email">Email:</Label>
+        <input type="email" name="" id="email" required>
+        <br>
+
+        <label for="password">Password:</label>
+        <input type="password" name="" id="password" required>
+        <br>
+
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account ? <a href="register.html">SignUp</a></p>
+    <script>
+        if (document.getElementById('loginForm')) {
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                // console.log(email, password);
+                // alert(email + password);
+
+            })
+        }
+    </script>
 </body>
 
 </html>
