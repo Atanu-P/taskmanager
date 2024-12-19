@@ -33,16 +33,26 @@
     </ul>
 
     <script>
+        // Check if the task form exists
         if (document.getElementById('taskForm')) {
-            const taskForm = document.getElementById('taskForm')
+            const taskForm = document.getElementById('taskForm');
+            const titleInput = document.getElementById('title');
+            const descriptionInput = document.getElementById('description');
+
+            // Add submit event listener to the form
             taskForm.addEventListener("submit", (e) => {
                 e.preventDefault();
-                const title = document.getElementById('title').value;
-                const description = document.getElementById('description').value;
 
-                console.log(title, description);
+                // Ensure the input fields exist before accessing their values
+                if (titleInput && descriptionInput) {
+                    const title = titleInput.value;
+                    const description = descriptionInput.value;
 
-            })
+                    console.log(title, description);
+                } else {
+                    console.error('Title or description input field is missing.');
+                }
+            });
         }
     </script>
 </body>

@@ -23,16 +23,27 @@
     </form>
     <p>Don't have an account ? <a href="register.html">SignUp</a></p>
     <script>
-        if (document.getElementById('loginForm')) {
-            const loginForm = document.getElementById('loginForm');
+        // Check if the login form exists
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            // Add submit event listener to the form
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                // console.log(email, password);
-                // alert(email + password);
 
-            })
+                // Ensure the input fields exist before accessing their values
+                if (emailInput && passwordInput) {
+                    const email = emailInput.value;
+                    const password = passwordInput.value;
+
+                    console.log(email, password);
+                    // alert(email + password);
+                } else {
+                    console.error('Email or password input field is missing.');
+                }
+            });
         }
     </script>
 </body>
