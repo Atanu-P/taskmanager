@@ -24,5 +24,14 @@ app.get("/", (req, res) => {
 });
 app.use(apiRoutes);
 
+/* Global Error Handler */
+app.use((err, req, res, next) => {
+  // Log the error stack trace for debugging
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    message: err.message || "Internal Server Error",
+  });
+});
+
 // Export the app instance for use in other modules
 module.exports = app;
