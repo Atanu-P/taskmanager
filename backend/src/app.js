@@ -2,6 +2,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const apiRoutes = require("./routes");
+const cookieParser = require("cookie-parser");
 
 // Create an instance of an Express application
 const app = express();
@@ -10,6 +11,7 @@ const app = express();
 
 // parse JSON bodies
 app.use(express.json());
+app.use(cookieParser());
 
 // parse URL-encoded bodies
 /* `extended: true` option allows for rich objects and arrays 

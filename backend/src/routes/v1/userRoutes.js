@@ -3,8 +3,9 @@ const User = require("../../models/user");
 const ApiError = require("../../utils/ApiError");
 const ApiResponse = require("../../utils/ApiResponse");
 const auth = require("../../middlewares/auth");
+const jwt = require("jsonwebtoken");
 
-const generateAccessAndRefereshTokens = async (id) => {
+const generateAccessAndRefreshTokens = async (id) => {
   try {
     const user = await User.findById(id);
     const accessToken = user.generateAccessToken();
@@ -17,7 +18,7 @@ const generateAccessAndRefereshTokens = async (id) => {
   } catch (error) {
     throw new ApiError(
       500,
-      "Something went wrong while generating referesh and access token"
+      "Something went wrong while generating refresh and access token"
     );
   }
 };
@@ -66,7 +67,7 @@ router.post("/register", async (req, res, next) => {
       );
     }
 
-    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
       newUser._id
     );
 
@@ -100,7 +101,7 @@ router.post("/register", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { email, username, password } = req.body;
-    console.log(email);
+    console.log({ email, username, password });
 
     if (!username && !email) {
       throw new ApiError(400, "username or email is required");
@@ -120,7 +121,7 @@ router.post("/login", async (req, res, next) => {
       throw new ApiError(401, "Invalid user credentials");
     }
 
-    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
       user._id
     );
 
@@ -174,6 +175,59 @@ router.post("/logout", auth, async (req, res, next) => {
       .clearCookie("accessToken")
       .clearCookie("refreshToken")
       .json(new ApiResponse(200, {}, "User logged out successfully"));
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Route for refreshing the access token
+router.post("/refresh-token", async (req, res, next) => {
+  try {
+    // console.log(req.cookies.refreshToken || req.body.refreshToken);
+    const incomingRefreshToken =
+      req.cookies.refreshToken || req.body.refreshToken;
+    // console.log(incomingRefreshToken);
+
+    if (!incomingRefreshToken) {
+      throw new ApiError(401, "unauthorized request");
+    }
+
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user) {
+      throw new ApiError(401, "Invalid refresh token");
+    }
+
+    if (incomingRefreshToken !== user?.refreshToken) {
+      throw new ApiError(401, "Refresh token is expired or used");
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      user._id
+    );
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: true,
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken },
+          "Access token refreshed"
+        )
+      );
   } catch (error) {
     next(error);
   }
