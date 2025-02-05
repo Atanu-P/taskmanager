@@ -30,7 +30,7 @@ app.use(apiRoutes);
 app.use((err, req, res, next) => {
   // Log the error stack trace for debugging
   console.error(err.stack);
-  res.status(err.status || 500).json({
+  res.status(err.statusCode || 500).json({
     message: err.message || "Internal Server Error",
   });
 });
