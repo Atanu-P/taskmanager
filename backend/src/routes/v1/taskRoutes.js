@@ -45,4 +45,77 @@ router.post("/create", auth, async (req, res, next) => {
   }
 });
 
+// Route for getting all tasks of a specific user
+router.get("/all", auth, async (req, res, next) => {
+  try {
+    // Get the userId from the auth middleware
+    const userId = req.user._id;
+
+    // Find all tasks for the authenticated user
+    const tasks = await Task.find({ user: userId });
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, tasks, "Tasks retrieved successfully"));
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Route for updating a task by task ID for a specific user
+router.put("/update/:taskId", auth, async (req, res, next) => {
+  try {
+    // Get the userId from the auth middleware
+    const userId = req.user._id;
+    const { taskId } = req.params;
+    const { title, description, status, dueDate, priority } = req.body;
+
+    console.log({ userId, taskId });
+
+    // Find the task by ID and ensure it belongs to the authenticated user
+    const task = await Task.findOne({ _id: taskId, user: userId });
+
+    if (!task) {
+      throw new ApiError(404, "Task not found or not authorized");
+    }
+
+    // Update the task fields
+    task.title = title || task.title;
+    task.description = description || task.description;
+    task.status = status || task.status;
+    task.dueDate = dueDate || task.dueDate;
+    task.priority = priority || task.priority;
+
+    // Save the updated task to the database
+    await task.save();
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, task, "Task updated successfully"));
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Route for deleting a task by task ID for a specific user
+router.delete("/delete/:taskId", auth, async (req, res, next) => {
+  try {
+    // Get the userId from the auth middleware
+    const userId = req.user._id;
+    const { taskId } = req.params;
+
+    // Find the task by ID and ensure it belongs to the authenticated user
+    const task = await Task.findOneAndDelete({ _id: taskId, user: userId });
+
+    if (!task) {
+      throw new ApiError(404, "Task not found or not authorized");
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, task, "Task deleted successfully"));
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;
