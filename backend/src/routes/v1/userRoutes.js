@@ -73,13 +73,17 @@ router.post("/register", async (req, res, next) => {
 
     return res
       .status(201)
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-      })
       .cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: true,
+        sameSite: "strict",
+        maxAge: 90 * 24 * 60 * 60 * 1000,
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 90 * 24 * 60 * 60 * 1000,
       })
       .json(
         new ApiResponse(
@@ -134,10 +138,14 @@ router.post("/login", async (req, res, next) => {
       .cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: true,
+        sameSite: "strict",
+        maxAge: 90 * 24 * 60 * 60 * 1000,
       })
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
+        sameSite: "strict",
+        maxAge: 90 * 24 * 60 * 60 * 1000,
       })
       .json(
         new ApiResponse(
@@ -233,4 +241,10 @@ router.post("/refresh-token", async (req, res, next) => {
   }
 });
 
+// Authentication check endpoint
+router.get("/check-auth", auth, (req, res) => {
+  res
+    .status(200)
+    .json(new ApiResponse(200, { user: req.user }, "User is authenticated"));
+});
 module.exports = router;

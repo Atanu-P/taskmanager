@@ -3,11 +3,19 @@ const express = require("express");
 const morgan = require("morgan");
 const apiRoutes = require("./routes");
 const cookieParser = require("cookie-parser");
-
+const cors = require("cors");
+const path = require("path");
 // Create an instance of an Express application
 const app = express();
 
 /* Middleware */
+
+app.use(
+  cors({
+    // origin: ["http://127.0.0.1:3000", "http://localhost:3000"], // frontend URL
+    credentials: true, // Allow credentials (cookies) to be sent
+  })
+);
 
 // parse JSON bodies
 app.use(express.json());
@@ -19,12 +27,27 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
+app.use(apiRoutes);
+
 // Define a simple route for the root URL
-app.get("/", (req, res) => {
-  res.send("Hello, world!");
+app.get("/helloworld", (req, res) => {
+  res.status(200);
+  res.json({
+    statusCode: 200,
+    message: "Hello, world!",
+    success: true,
+  });
+  // res.send("Hello, world!");
   console.log("/Hello, world!");
 });
-app.use(apiRoutes);
+
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, "../../frontend")));
+
+// Serve index.html for all unknown routes (useful for single-page apps)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../frontend/index.html"));
+});
 
 /* Global Error Handler */
 app.use((err, req, res, next) => {

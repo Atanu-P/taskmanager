@@ -22,7 +22,77 @@
         <button type="submit">Login</button>
     </form>
     <p>Don't have an account ? <a href="register.html">SignUp</a></p>
-    <script>
+    <script type="module">
+        import config from "./js/config.js"
+
+        // Function to check if the user is already logged in
+        async function checkLoggedIn() {
+            try {
+                const response = await fetch(`${config.apiBaseUrl}api/v1/users/check-auth`, {
+                    method: 'GET',
+                    credentials: 'include', // Include cookies in the request
+                });
+
+                const data = await response.json();
+
+                if (response.ok || response.status === 200 || response.message === "User is authenticated") {
+                    console.log('User is authenticated:', data);
+                    // Redirect to task.html if the user is authenticated
+                    console.log("Redirecting to task.html");
+                    window.location.href = "task.html"
+                } else {
+                    console.log('User is not authenticated:', data);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Call the checkLoggedIn function when the page loads
+        checkLoggedIn();
+
+
+        // Function to handle login
+        async function login(email, password) {
+            try {
+                const response = await fetch(`${config.apiBaseUrl}api/v1/users/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    }),
+                    credentials: 'include', // Include cookies in the request
+                });
+
+                const data = await response.json();
+
+                if (response.ok || response.status === 200) {
+                    console.log('Login successful:', data);
+                    // Redirect to another page or update the UI as needed
+                    window.location.href = 'task.html';
+                } else if (response.status === 400 && data.message === "User does not exist") {
+                    console.error('Login failed:', data.message);
+                    // Display an alert with the error message
+                    alert('User does not exist');
+                } else if (response.status === 401 && data.message === "Invalid user credentials") {
+                    console.error('Login failed:', data.message);
+                    // Display an alert with the error message
+                    alert('Password is incorrect');
+                } else {
+                    console.log('Login failed:', data);
+                    console.error('Login failed:', data.message);
+                    // Display an error message to the user
+                    alert('Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Display an error message to the user
+            }
+        }
+
         // Check if the login form exists
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
@@ -30,7 +100,7 @@
             const passwordInput = document.getElementById('password');
 
             // Add submit event listener to the form
-            loginForm.addEventListener('submit', (e) => {
+            loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
                 // Ensure the input fields exist before accessing their values
@@ -40,6 +110,8 @@
 
                     console.log(email, password);
                     // alert(email + password);
+
+                    login(email, password)
                 } else {
                     console.error('Email or password input field is missing.');
                 }
