@@ -22,35 +22,207 @@
         <textarea name="" id="description"></textarea>
         <br>
 
+        <label for="dueDate">Due Date:</label>
+        <input type="date" id="dueDate" name="dueDate">
+        <br>
+
+        <label for="priority">Priority:</label>
+        <select id="priority" name="priority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+        <br>
+
+        <label for="tags">Tags (comma-separated):</label>
+        <input type="text" id="tags" name="tags">
+        <br>
+
         <button type="submit">Add Task</button>
     </form>
     <br>
     <h3>Task list</h3>
     <ul id="taskList">
-        <li>task 1</li>
-        <li>task 2</li>
-        <li>task 3</li>
+
     </ul>
 
-    <script>
+    <script type="module">
+        import config from "./js/config.js";
+
+        let currentPage = 1;
+        const limit = 15;
+        let loading = false;
+
+        // Function to check if the user is already logged in
+        async function checkLoggedIn() {
+            try {
+                const response = await fetch(`${config.apiBaseUrl}api/v1/users/check-auth`, {
+                    method: 'GET',
+                    credentials: 'include', // Include cookies in the request
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok || response.status === 200 || response.message === "User is authenticated") {
+                    console.log('User is authenticated:', responseData);
+                    // Redirect to task.html if the user is authenticated
+                    console.log(responseData.data.user.username)
+                    document.getElementById("username").textContent = responseData.data.user.username;
+                } else {
+                    console.log('User is not authenticated:', responseData);
+                    window.location.href = "index.html";
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Call the checkLoggedIn function if user session not exists
+        checkLoggedIn();
+
+        // Function to handle logout
+        async function logout() {
+            if (confirm("Are you sure you want to logout?")) {
+                try {
+                    sessionStorage.removeItem("loggedIn");
+                    const response = await fetch(`${config.apiBaseUrl}api/v1/users/logout`, {
+                        method: 'POST',
+                        credentials: 'include', // Include cookies in the request
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok || response.status === 200) {
+                        console.log('Logout successful:', data);
+
+                        // Redirect to login page
+                        window.location.href = "index.html";
+                    } else {
+                        console.error('Failed to logout:', data);
+                        // Display an error message to the user
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    // Display an error message to the user
+                }
+                window.location.href = "index.html";
+            }
+        }
+
+        document.getElementById('logout').addEventListener('click', logout);
+
+        // Function to handle task creation
+        async function createTask(task) {
+            try {
+                const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(task),
+                    credentials: 'include', // Include cookies in the request
+                });
+
+                const data = await response.json();
+
+                if (response.ok || response.status === 201 || response.message === "Task created successfully") {
+                    console.log('Task created successfully:', data);
+                    // Redirect or update the UI as needed
+                    addTaskToList(data.data, true);
+                } else {
+                    console.error('Failed to create task:', data);
+                    // Display an error message to the user
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Display an error message to the user
+            }
+        }
+
+        // Function to add a task to the list
+        function addTaskToList(task, prepend = false) {
+            const taskList = document.getElementById('taskList');
+            const taskItem = document.createElement('li');
+            taskItem.textContent = `${task.title} - ${task.description} - ${task.dueDate} - ${task.priority} - ${task.tags.join(', ')}`;
+            if (prepend) {
+                taskList.prepend(taskItem);
+            } else {
+                taskList.appendChild(taskItem);
+            }
+        }
+
+        // Function to fetch tasks with pagination
+        async function fetchTasks(page, limit) {
+            if (loading) return;
+            loading = true;
+            try {
+                const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/all?page=${page}&limit=${limit}`, {
+                    method: 'GET',
+                    credentials: 'include', // Include cookies in the request
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok || response.status === 200) {
+                    console.log('Tasks retrieved successfully:', responseData);
+                    responseData.data.forEach(task => addTaskToList(task));
+                    currentPage++;
+                } else {
+                    console.error('Failed to retrieve tasks:', data);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            loading = false;
+        }
+
+        // Infinite scrolling
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400 && !loading) {
+                fetchTasks(currentPage, limit);
+            }
+        });
+
+        // Initial fetch of tasks
+        fetchTasks(currentPage, limit);
+
         // Check if the task form exists
         if (document.getElementById('taskForm')) {
             const taskForm = document.getElementById('taskForm');
             const titleInput = document.getElementById('title');
             const descriptionInput = document.getElementById('description');
+            const dueDateInput = document.getElementById('dueDate');
+            const priorityInput = document.getElementById('priority');
+            const tagsInput = document.getElementById('tags');
 
             // Add submit event listener to the form
             taskForm.addEventListener("submit", (e) => {
                 e.preventDefault();
 
                 // Ensure the input fields exist before accessing their values
-                if (titleInput && descriptionInput) {
+                if (titleInput) {
                     const title = titleInput.value;
                     const description = descriptionInput.value;
+                    const dueDate = dueDateInput.value;
+                    const priority = priorityInput.value;
+                    const tags = tagsInput.value.split(',').map(tag => tag.trim());
 
-                    console.log(title, description);
+                    // Create task object
+                    const task = {
+                        title,
+                        description,
+                        status: "",
+                        dueDate,
+                        priority,
+                        tags,
+                    };
+
+                    console.log(task);
+
+                    createTask(task);
                 } else {
-                    console.error('Title or description input field is missing.');
+                    console.error('Title field is missing.');
+                    alert('Title field is missing.');
                 }
             });
         }

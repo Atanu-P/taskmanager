@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
 // Route for creating a new task
 router.post("/create", auth, async (req, res, next) => {
   try {
-    const { title, description, status, dueDate, priority } = req.body;
+    const { title, description, status, dueDate, priority, tags } = req.body;
     const userId = req.user._id; // Get the userId from the auth middleware
 
     if (!title || title.trim() === "") {
@@ -23,9 +23,10 @@ router.post("/create", auth, async (req, res, next) => {
     const newTask = new Task({
       title,
       description,
-      status,
+      status: "pending",
       dueDate,
       priority,
+      tags,
       user: userId, // Assign the userId to the task
     });
 
@@ -50,9 +51,15 @@ router.get("/all", auth, async (req, res, next) => {
   try {
     // Get the userId from the auth middleware
     const userId = req.user._id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
     // Find all tasks for the authenticated user
-    const tasks = await Task.find({ user: userId });
+    const tasks = await Task.find({ user: userId })
+      .sort({ createdAt: -1 }) // Sort by creation date in descending order
+      .skip(skip)
+      .limit(limit);
 
     res
       .status(200)
