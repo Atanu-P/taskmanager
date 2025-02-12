@@ -18,13 +18,13 @@ app.use(
 );
 
 // parse JSON bodies
-app.use(express.json());
+app.use(express.json({ limit: "16kb" }));
 app.use(cookieParser());
 
 // parse URL-encoded bodies
 /* `extended: true` option allows for rich objects and arrays 
     to be encoded into the URL-encoded format  */
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(morgan("dev"));
 
 app.use(apiRoutes);
