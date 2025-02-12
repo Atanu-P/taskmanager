@@ -22,15 +22,15 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd backend  # Move into backend directory
+          cd backend  
           npm install
         working-directory: backend
 
       - name: Prepare Deployment Package
         run: |
           mkdir deploy_package
-          cp -r backend/* deploy_package/  # Copy backend files
-          cp -r frontend deploy_package/   # Copy frontend directory
+          cp -r backend/* deploy_package/  
+          cp -r frontend deploy_package/   
 
           # Ensure deploy package contains everything
           cd deploy_package
