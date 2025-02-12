@@ -19,17 +19,22 @@ jobs:
           node-version: 20 # Use the Node.js version your project needs
           cache: "npm"
           cache-dependency-path: backend/package-lock.json
+          fetch-depth: 0
+
+
+      - name: Debug - List Files in Repo
+        run: ls -la
 
       - name: Install Dependencies
         run: |
-          ls -la  
+          cd backend  
           npm install
-        working-directory: backend
+        # working-directory: backend
 
       - name: Prepare Deployment Package
         run: |
           mkdir deploy_package
-          cp -r backend/* deploy_package/  
+          cp -r backend deploy_package/  
           cp -r frontend deploy_package/   
 
           # Ensure deploy package contains everything
