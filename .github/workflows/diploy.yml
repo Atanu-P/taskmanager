@@ -40,6 +40,7 @@ jobs:
         run: |
           cd backend  
           npm install
+          ls -la
         # working-directory: backend
 
       - name: Deploy to Elastic Beanstalk
