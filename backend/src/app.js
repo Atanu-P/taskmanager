@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://127.0.0.1:5000", "http://localhost:5000"], // frontend URL
+    origin: "*", // frontend URL
     credentials: true, // Allow credentials (cookies) to be sent
   })
 );
