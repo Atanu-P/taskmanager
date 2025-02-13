@@ -29,7 +29,8 @@ jobs:
         run: |
           mkdir deploy_package
           cp -r backend deploy_package/  
-          cp -r frontend deploy_package/   
+          cp -r frontend deploy_package/
+          cp Procfile deploy_package/   
 
           # Ensure deploy package contains everything
           cd deploy_package
