@@ -41,6 +41,7 @@ jobs:
           cd backend  
           npm install
           ls -la
+          npm install dotenv
         # working-directory: backend
 
       - name: Deploy to Elastic Beanstalk
