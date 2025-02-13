@@ -16,11 +16,10 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20 # Use the Node.js version your project needs
+          node-version: 22 # Use the Node.js version your project needs
           cache: "npm"
           cache-dependency-path: backend/package-lock.json
           fetch-depth: 0
-
 
       - name: Debug - List Files in Repo
         run: ls -la
