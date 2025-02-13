@@ -19,10 +19,15 @@ jobs:
           node-version: 22 # Use the Node.js version your project needs
           cache: "npm"
           cache-dependency-path: backend/package-lock.json
-          fetch-depth: 0
+          # fetch-depth: 0
 
       - name: Debug - List Files in Repo
         run: ls -la
+
+      - name: Install Dependencies
+        run: |
+          cd backend && npm install
+        # working-directory: backend
 
       - name: Prepare Deployment Package
         run: |
@@ -34,13 +39,6 @@ jobs:
           # Ensure deploy package contains everything
           cd deploy_package
           zip -r ../deploy.zip . -x "*.git*"
-
-      - name: Install Dependencies
-        run: |
-          cd backend && npm install
-          npm uninstall dotenv
-          npm install dotenv
-        # working-directory: backend
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
