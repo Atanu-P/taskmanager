@@ -17,6 +17,7 @@
   "author": "Atanu Pal",
   "license": "ISC",
   "dependencies": {
+    "and": "^0.0.3",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
