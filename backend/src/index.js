@@ -3,7 +3,9 @@ const connectDB = require("./db");
 const app = require("./app");
 
 // Load environment variables from .env file
-dotenv.config();
+dotenv.config({
+  path: './.env'
+});
 
 // Connect to the database
 connectDB();
