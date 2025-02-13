@@ -40,8 +40,6 @@ jobs:
         run: |
           cd backend  
           npm install
-          ls -la
-          npm install dotenv
         # working-directory: backend
 
       - name: Deploy to Elastic Beanstalk
@@ -54,10 +52,10 @@ jobs:
           region: ${{ secrets.AWS_REGION }}
           version_label: ${{ github.sha }}
           deployment_package: deploy.zip
-          env_variables: |
-            MONGO_URI=${{ vars.MONGO_URI }}
-            PORT=${{ vars.PORT }}
-            ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}
-            ACCESS_TOKEN_EXPIRY=${{ vars.ACCESS_TOKEN_EXPIRY }}
-            REFRESH_TOKEN_SECRET=${{ vars.REFRESH_TOKEN_SECRET }}
-            REFRESH_TOKEN_EXPIRY=${{ vars.REFRESH_TOKEN_EXPIRY }}
+          # env_variables: |
+          #   MONGO_URI=${{ vars.MONGO_URI }}
+          #   PORT=${{ vars.PORT }}
+          #   ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}
+          #   ACCESS_TOKEN_EXPIRY=${{ vars.ACCESS_TOKEN_EXPIRY }}
+          #   REFRESH_TOKEN_SECRET=${{ vars.REFRESH_TOKEN_SECRET }}
+          #   REFRESH_TOKEN_EXPIRY=${{ vars.REFRESH_TOKEN_EXPIRY }}
