@@ -137,13 +137,13 @@ router.post("/login", async (req, res, next) => {
       .status(200)
       .cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: "strict",
         maxAge: 90 * 24 * 60 * 60 * 1000,
       })
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: "strict",
         maxAge: 90 * 24 * 60 * 60 * 1000,
       })

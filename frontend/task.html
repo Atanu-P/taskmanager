@@ -168,7 +168,7 @@
                     responseData.data.forEach(task => addTaskToList(task));
                     currentPage++;
                 } else {
-                    console.error('Failed to retrieve tasks:', data);
+                    console.error('Failed to retrieve tasks:', responseData);
                 }
             } catch (error) {
                 console.error('Error:', error);
