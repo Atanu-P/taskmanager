@@ -38,8 +38,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd backend  
-          npm install
+          cd backend && npm install
+          cd node_modules && ls 
         # working-directory: backend
 
       - name: Deploy to Elastic Beanstalk
