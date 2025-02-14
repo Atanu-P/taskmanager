@@ -70,7 +70,7 @@
                     document.getElementById("username").textContent = responseData.data.user.username;
                 } else {
                     console.log('User is not authenticated:', responseData);
-                    // window.location.href = "index.html";
+                    window.location.href = "index.html";
                 }
             } catch (error) {
                 console.error('Error:', error);
