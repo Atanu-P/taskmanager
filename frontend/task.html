@@ -124,16 +124,7 @@
     <div class="container">
         <div class="todo-container">
             <h3 class="text-center">Todo List</h3>
-            <!-- <ul class="list-group" id="">
-                <li class="list-group-item task-item">
-                    <input type="checkbox" class="form-check-input">
-                    <div class="task-details">
-                        <strong>Task Name</strong><br>
-                        Due: <span class="text-muted">2025-02-25</span> | Created: <span class="text-muted">2025-02-20</span>
-                    </div>
-                    <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
-                </li>
-            </ul> -->
+
             <ul class="list-group" id="taskList">
                 <!-- ALL THE TASKS FETCHED HERE -->
 
@@ -255,7 +246,7 @@
 
         document.getElementById('logout').addEventListener('click', logout);
 
-        // Function to handle task creation
+        // Function to create a task
         async function createTask(task) {
             try {
                 const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/create`, {
@@ -309,6 +300,7 @@
             }
         }
 
+        // Function to delete a task
         async function deleteTask(taskId) {
             try {
                 const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/delete/${taskId}`, {
@@ -333,7 +325,7 @@
             }
         }
 
-        // Function to add a task to the list
+        // Function to add a task inside unordered list
         function addTaskToList(task, prepend = false) {
             const taskList = document.getElementById('taskList');
             const taskItem = document.createElement('li');
@@ -410,7 +402,7 @@
             loading = false;
         }
 
-        // Infinite scrolling
+        // Infinite scrolling for tasks
         window.addEventListener('scroll', () => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400 && !loading) {
                 fetchTasks(currentPage, limit);
