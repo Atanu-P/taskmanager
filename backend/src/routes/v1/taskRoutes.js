@@ -125,4 +125,39 @@ router.delete("/delete/:taskId", auth, async (req, res, next) => {
     next(error);
   }
 });
+
+// Route for changing the status of a specific task
+router.patch("/update-status/:taskId", auth, async (req, res, next) => {
+  try {
+    // Get the userId from the auth middleware
+    const userId = req.user._id;
+    const { taskId } = req.params;
+    const { status } = req.body;
+
+    console.log({ userId, taskId, status });
+    // Find the task by ID and ensure it belongs to the authenticated user
+    const task = await Task.findOne({ _id: taskId, user: userId });
+
+    if (!task) {
+      throw new ApiError(404, "Task not found or not authorized");
+    }
+
+    // Check if the task status is already the same as the new status
+    if (task.status == status) {
+      throw new ApiError(400, "Task status is already " + status);
+    }
+
+    // Update the task status
+    task.status = status;
+
+    // Save the updated task to the database
+    await task.save();
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, task, "Task status updated successfully"));
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;
