@@ -12,10 +12,9 @@
 
 .tagline {
   font-family: "Inter", sans-serif;
-  font-size: 1rem;
+  font-size: 10px;
   font-weight: 500;
   color: #6c757d;
-  /* Bootstrap secondary color */
   text-align: center;
   max-width: 80%;
   margin: 0 auto;
