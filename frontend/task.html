@@ -14,7 +14,7 @@
 
         .todo-container {
             max-width: 600px;
-            margin: 50px auto;
+            margin: 15px auto;
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -119,8 +119,7 @@
     </style>
 </head>
 
-<body>
-
+<body class="bg-dark-subtle">
     <div class="container">
         <div class="todo-container">
             <h3 class="text-center">Todo List</h3>
@@ -183,6 +182,10 @@
 
     <script type="module">
         import config from "./js/config.js";
+        import logout from "./js/logout.js";
+
+        // Add event listener to the logout button
+        document.getElementById('logout').addEventListener('click', logout);
 
         let currentPage = 1;
         const limit = 10;
@@ -214,37 +217,6 @@
 
         // Call the checkLoggedIn function if user session not exists
         checkLoggedIn();
-
-        // Function to handle logout
-        async function logout() {
-            if (confirm("Are you sure you want to logout?")) {
-                try {
-                    sessionStorage.removeItem("loggedIn");
-                    const response = await fetch(`${config.apiBaseUrl}api/v1/users/logout`, {
-                        method: 'POST',
-                        credentials: 'include', // Include cookies in the request
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok || response.status === 200) {
-                        console.log('Logout successful:', data);
-
-                        // Redirect to login page
-                        window.location.href = "index.html";
-                    } else {
-                        console.error('Failed to logout:', data);
-                        // Display an error message to the user
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    // Display an error message to the user
-                }
-                window.location.href = "index.html";
-            }
-        }
-
-        document.getElementById('logout').addEventListener('click', logout);
 
         // Function to create a task
         async function createTask(task) {
@@ -334,14 +306,17 @@
             taskItem.setAttribute('id', task._id)
             taskItem.innerHTML = `
                 <input type="checkbox" data-task-id="${task._id}" ${task.status === 'completed' ? 'checked' : ''}>
-                <div class="task-info">
+
+                <div class="task-info ${task.status === 'completed' ? 'completed-task' : ''}">
                     <strong>${task.title}</strong>
                     <span class="badge bg-${task.priority === 'high' ? 'danger' : task.priority === 'medium' ? 'warning' : 'secondary'} rounded-pill ms-2">${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</span>
                 </div>
+
                 <div class="task-dates">
                     <span class="due-date">Due: ${task.dueDate}</span>
                     <span class="created-date">Created: ${new Date(task.createdAt).toLocaleDateString()}</span>
                 </div>
+
                 <button class="btn btn-sm btn-danger btn-delete">Delete</button> `;
             if (prepend) {
                 taskList.prepend(taskItem);
