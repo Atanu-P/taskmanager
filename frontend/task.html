@@ -8,10 +8,6 @@
     <title>Task manager | Task</title>
 
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
         .todo-container {
             max-width: 600px;
             margin: 15px auto;
@@ -121,14 +117,15 @@
 
 <body class="bg-dark-subtle">
     <div class="container">
-        <div style="max-width: 600px; margin-top: 15px;">
+        <div class="todo-container">
+            <h4>Welcome, <span id="username">Demo</span></h4>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
-                <button class="btn btn-success me-sm-2" style="border-radius: 10px;" type="button">New Task</button>
-                <button class="btn btn-secondary" style="border-radius: 10px;" type="button">Logout</button>
+                <button id="newtask" class="btn btn-success me-sm-2 btn-sm" style="border-radius: 10px;" type="button" data-bs-toggle="modal" data-bs-target="#taskModal">+ New Task</button>
+                <button id="logout" class="btn btn-secondary btn-sm" style="border-radius: 10px;" type="button">Logout</button>
             </div>
         </div>
         <div class="todo-container">
-            <h3 class="text-center">Todo List</h3>
+            <!-- <h3 class="text-center">Todo List</h3> -->
 
             <ul class="list-group" id="taskList">
                 <!-- ALL THE TASKS FETCHED HERE -->
@@ -148,9 +145,50 @@
             </ul>
         </div>
     </div>
-    <h1>Task Manager</h1>
-    <h2>Welcome, <span id="username">Demo</span></h2>
-    <button id="logout">Logout</button>
+    <!-- <h1>Task Manager</h1> -->
+    <!-- <h2>Welcome, <span id="username">Demo</span></h2> -->
+    <!-- <button id="logout">Logout</button> -->
+
+
+    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskModalLabel">Add New Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="taskForm">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Task Title</label>
+                            <input type="text" class="form-control" id="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Task Description</label>
+                            <textarea class="form-control" id="description"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dueDate" class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="dueDate" name="dueDate">
+                        </div>
+                        <div class="mb-3">
+                            <label for="priority" class="form-label">Priority</label>
+                            <select class="form-select" id="priority" name="priority">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags (comma-separated)</label>
+                            <input type="text" class="form-control" id="tags" name="tags">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Task</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <h3>Add Task</h3>
     <form action="" id="taskForm">
@@ -185,7 +223,7 @@
     <!-- <ul id="taskList">
 
     </ul> -->
-
+    <script src="https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
         import config from "./js/config.js";
         import logout from "./js/logout.js";
@@ -242,6 +280,7 @@
                     console.log('Task created successfully:', data);
                     // Redirect or update the UI as needed
                     addTaskToList(data.data, true);
+
                 } else {
                     console.error('Failed to create task:', data);
                     // Display an error message to the user
