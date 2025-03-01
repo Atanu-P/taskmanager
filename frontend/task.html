@@ -120,7 +120,7 @@
         <div class="todo-container">
             <h4>Welcome, <span id="username">Demo</span></h4>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
-                <button id="newtask" class="btn btn-success me-sm-2 btn-sm" style="border-radius: 10px;" type="button" data-bs-toggle="modal" data-bs-target="#taskModal">+ New Task</button>
+                <button id="newtask" class="btn btn-success me-sm-2 btn-sm" style="border-radius: 10px;" type="button" data-bs-toggle="modal" data-bs-target="#taskFormModal">+ New Task</button>
                 <button id="logout" class="btn btn-secondary btn-sm" style="border-radius: 10px;" type="button">Logout</button>
             </div>
         </div>
@@ -150,13 +150,16 @@
     <!-- <button id="logout">Logout</button> -->
 
 
-    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal fade" id="taskFormModal" tabindex="-1" aria-labelledby="taskFormModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content bg-dark-subtle">
+                <!-- Modal header start-->
                 <div class="modal-header">
-                    <h5 class="modal-title" id="taskModalLabel">Add New Task</h5>
+                    <h5 class="modal-title" id="taskFormModalLabel">Add New Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <!-- Modal header end-->
+                <!-- Modal body start-->
                 <div class="modal-body">
                     <form id="taskForm">
                         <div class="mb-3">
@@ -186,12 +189,13 @@
                         <button type="submit" class="btn btn-primary">Add Task</button>
                     </form>
                 </div>
+                <!-- Modal body end-->
             </div>
         </div>
     </div>
 
     <h3>Add Task</h3>
-    <form action="" id="taskForm">
+    <!-- <form action="" id="taskForm">
         <label for="title">Task Title:</label>
         <input type="text" id="title" required>
         <br>
@@ -217,7 +221,7 @@
         <br>
 
         <button type="submit">Add Task</button>
-    </form>
+    </form> -->
     <br>
     <h3>Task list</h3>
     <!-- <ul id="taskList">
@@ -262,6 +266,9 @@
         // Call the checkLoggedIn function if user session not exists
         checkLoggedIn();
 
+        // Get the task form modal
+        const taskFormModal = new bootstrap.Modal(document.getElementById('taskFormModal'));
+
         // Function to create a task
         async function createTask(task) {
             try {
@@ -274,20 +281,22 @@
                     credentials: 'include', // Include cookies in the request
                 });
 
-                const data = await response.json();
+                const responseData = await response.json();
 
                 if (response.ok || response.status === 201 || response.message === "Task created successfully") {
-                    console.log('Task created successfully:', data);
+                    console.log('Task created successfully:', responseData);
                     // Redirect or update the UI as needed
-                    addTaskToList(data.data, true);
+                    addTaskToList(responseData.data, true);
 
+                    // Hide the task form modal
+                    taskFormModal.hide();
                 } else {
-                    console.error('Failed to create task:', data);
                     // Display an error message to the user
+                    console.error('Failed to create task:', responseData);
                 }
             } catch (error) {
-                console.error('Error:', error);
                 // Display an error message to the user
+                console.error('Error:', error);
             }
         }
 
@@ -441,6 +450,10 @@
             const priorityInput = document.getElementById('priority');
             const tagsInput = document.getElementById('tags');
 
+            // Set the min attribute of the dueDate input to today's date
+            const today = new Date().toISOString().split('T')[0];
+            dueDateInput.setAttribute('min', today);
+
             // Add submit event listener to the form
             taskForm.addEventListener("submit", (e) => {
                 e.preventDefault();
@@ -466,6 +479,8 @@
                     console.log(task);
 
                     createTask(task);
+
+                    taskForm.reset();
                 } else {
                     console.error('Title field is missing.');
                     alert('Title field is missing.');
