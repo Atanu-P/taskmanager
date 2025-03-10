@@ -38,9 +38,7 @@ router.post("/create", auth, async (req, res, next) => {
       throw new ApiError(500, "Something went wrong while creating the task");
     }
 
-    res
-      .status(201)
-      .json(new ApiResponse(201, createdTask, "Task created successfully"));
+    res.status(201).json(new ApiResponse(201, createdTask, "Task created successfully"));
   } catch (error) {
     next(error);
   }
@@ -61,9 +59,7 @@ router.get("/all", auth, async (req, res, next) => {
       .skip(skip)
       .limit(limit);
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, tasks, "Tasks retrieved successfully"));
+    res.status(200).json(new ApiResponse(200, tasks, "Tasks retrieved successfully"));
   } catch (error) {
     next(error);
   }
@@ -96,9 +92,7 @@ router.put("/update/:taskId", auth, async (req, res, next) => {
     // Save the updated task to the database
     await task.save();
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, task, "Task updated successfully"));
+    res.status(200).json(new ApiResponse(200, task, "Task updated successfully"));
   } catch (error) {
     next(error);
   }
@@ -118,9 +112,7 @@ router.delete("/delete/:taskId", auth, async (req, res, next) => {
       throw new ApiError(404, "Task not found or not authorized");
     }
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, task, "Task deleted successfully"));
+    res.status(200).json(new ApiResponse(200, task, "Task deleted successfully"));
   } catch (error) {
     next(error);
   }
@@ -153,9 +145,7 @@ router.patch("/update-status/:taskId", auth, async (req, res, next) => {
     // Save the updated task to the database
     await task.save();
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, task, "Task status updated successfully"));
+    res.status(200).json(new ApiResponse(200, task, "Task status updated successfully"));
   } catch (error) {
     next(error);
   }
