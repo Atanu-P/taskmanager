@@ -149,7 +149,7 @@
     <!-- <h2>Welcome, <span id="username">Demo</span></h2> -->
     <!-- <button id="logout">Logout</button> -->
 
-
+    <!-- Add-task Form Modal for Adding New Task -->
     <div class="modal fade" id="taskFormModal" tabindex="-1" aria-labelledby="taskFormModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark-subtle">
@@ -194,6 +194,47 @@
         </div>
     </div>
 
+    <!-- Update-task Form Modal for Updating Task -->
+    <div class="modal fade" id="updateTaskFormModal" tabindex="-1" aria-labelledby="updateTaskFormModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateTaskFormModalLabel">Update Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateTaskForm">
+                        <div class="mb-3">
+                            <label for="updateTitle" class="form-label">Task Title</label>
+                            <input type="text" class="form-control" id="updateTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateDescription" class="form-label">Task Description</label>
+                            <textarea class="form-control" id="updateDescription"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateDueDate" class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="updateDueDate" name="dueDate">
+                        </div>
+                        <div class="mb-3">
+                            <label for="updatePriority" class="form-label">Priority</label>
+                            <select class="form-select" id="updatePriority" name="priority">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateTags" class="form-label">Tags (comma-separated)</label>
+                            <input type="text" class="form-control" id="updateTags" name="tags">
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="updateTaskButton">Update Task</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <h3>Add Task</h3>
     <!-- <form action="" id="taskForm">
         <label for="title">Task Title:</label>
@@ -228,6 +269,7 @@
 
     </ul> -->
     <script src="https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/task.js" type="module"></script>
     <script type="module">
         import config from "./js/config.js";
         import logout from "./js/logout.js";
@@ -235,9 +277,9 @@
         // Add event listener to the logout button
         document.getElementById('logout').addEventListener('click', logout);
 
-        let currentPage = 1;
-        const limit = 10;
-        let loading = false;
+        // let currentPage = 1;
+        // const limit = 10;
+        // let loading = false;
 
         // Function to check if the user is already logged in
         async function checkLoggedIn() {
@@ -267,226 +309,227 @@
         checkLoggedIn();
 
         // Get the task form modal
-        const taskFormModal = new bootstrap.Modal(document.getElementById('taskFormModal'));
+        // const taskFormModal = new bootstrap.Modal(document.getElementById('taskFormModal'));
+        // const updateTaskFormModal = new bootstrap.Modal(document.getElementById('updateTaskFormModal'));
 
         // Function to create a task
-        async function createTask(task) {
-            try {
-                const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/create`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(task),
-                    credentials: 'include', // Include cookies in the request
-                });
+        // async function createTask(task) {
+        //     try {
+        //         const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/create`, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             body: JSON.stringify(task),
+        //             credentials: 'include', // Include cookies in the request
+        //         });
 
-                const responseData = await response.json();
+        //         const responseData = await response.json();
 
-                if (response.ok || response.status === 201 || response.message === "Task created successfully") {
-                    console.log('Task created successfully:', responseData);
-                    // Redirect or update the UI as needed
-                    addTaskToList(responseData.data, true);
+        //         if (response.ok || response.status === 201 || response.message === "Task created successfully") {
+        //             console.log('Task created successfully:', responseData);
+        //             // Redirect or update the UI as needed
+        //             addTaskToList(responseData.data, true);
 
-                    // Hide the task form modal
-                    taskFormModal.hide();
-                } else {
-                    // Display an error message to the user
-                    console.error('Failed to create task:', responseData);
-                }
-            } catch (error) {
-                // Display an error message to the user
-                console.error('Error:', error);
-            }
-        }
+        //             // Hide the task form modal
+        //             taskFormModal.hide();
+        //         } else {
+        //             // Display an error message to the user
+        //             console.error('Failed to create task:', responseData);
+        //         }
+        //     } catch (error) {
+        //         // Display an error message to the user
+        //         console.error('Error:', error);
+        //     }
+        // }
 
         // Function to update-task-status
-        async function updateTaskStatus(taskId, status) {
-            try {
-                const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/update-status/${taskId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        status
-                    }),
-                    credentials: 'include', // Include cookies in the request
-                });
+        // async function updateTaskStatus(taskId, status) {
+        //     try {
+        //         const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/update-status/${taskId}`, {
+        //             method: 'PATCH',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             body: JSON.stringify({
+        //                 status
+        //             }),
+        //             credentials: 'include', // Include cookies in the request
+        //         });
 
-                const data = await response.json();
+        //         const data = await response.json();
 
-                if (response.ok || response.status === 200) {
-                    console.log('Task-status updated successfully:', data);
-                } else {
-                    console.error('Failed to update-task status:', data);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
+        //         if (response.ok || response.status === 200) {
+        //             console.log('Task-status updated successfully:', data);
+        //         } else {
+        //             console.error('Failed to update-task status:', data);
+        //         }
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //     }
+        // }
 
         // Function to delete a task
-        async function deleteTask(taskId) {
-            try {
-                const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/delete/${taskId}`, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
+        // async function deleteTask(taskId) {
+        //     try {
+        //         const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/delete/${taskId}`, {
+        //             method: 'DELETE',
+        //             credentials: 'include'
+        //         });
 
-                const responseData = await response.json();
+        //         const responseData = await response.json();
 
-                if (response.ok || response.status === 200) {
-                    console.log('Task deleted successfully: ', responseData);
-                    // Remove task from the list
-                    const task = document.querySelector(`li[id="${taskId}"]`);
-                    // console.log(task)
-                    task.remove();
-                } else {
-                    console.error('Failed to delete task: ', responseData);
-                }
+        //         if (response.ok || response.status === 200) {
+        //             console.log('Task deleted successfully: ', responseData);
+        //             // Remove task from the list
+        //             const task = document.querySelector(`li[id="${taskId}"]`);
+        //             // console.log(task)
+        //             task.remove();
+        //         } else {
+        //             console.error('Failed to delete task: ', responseData);
+        //         }
 
-            } catch (error) {
-                console.error('Error:', error)
-            }
-        }
+        //     } catch (error) {
+        //         console.error('Error:', error)
+        //     }
+        // }
 
         // Function to add a task inside unordered list
-        function addTaskToList(task, prepend = false) {
-            const taskList = document.getElementById('taskList');
-            const taskItem = document.createElement('li');
-            // taskItem.textContent = `${task.title} - ${task.description} - ${task.dueDate} - ${task.priority} - ${task.tags.join(', ')}`;
-            taskItem.classList.add('list-group-item', 'task-item');
-            taskItem.setAttribute('id', task._id)
-            taskItem.innerHTML = `
-                <input type="checkbox" data-task-id="${task._id}" ${task.status === 'completed' ? 'checked' : ''}>
+        // function addTaskToList(task, prepend = false) {
+        //     const taskList = document.getElementById('taskList');
+        //     const taskItem = document.createElement('li');
+        //     // taskItem.textContent = `${task.title} - ${task.description} - ${task.dueDate} - ${task.priority} - ${task.tags.join(', ')}`;
+        //     taskItem.classList.add('list-group-item', 'task-item');
+        //     taskItem.setAttribute('id', task._id)
+        //     taskItem.innerHTML = `
+        //         <input type="checkbox" data-task-id="${task._id}" ${task.status === 'completed' ? 'checked' : ''}>
 
-                <div class="task-info ${task.status === 'completed' ? 'completed-task' : ''}">
-                    <strong>${task.title}</strong>
-                    <span class="badge bg-${task.priority === 'high' ? 'danger' : task.priority === 'medium' ? 'warning' : 'secondary'} rounded-pill ms-2">${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</span>
-                </div>
+        //         <div class="task-info ${task.status === 'completed' ? 'completed-task' : ''}">
+        //             <strong>${task.title}</strong>
+        //             <span class="badge bg-${task.priority === 'high' ? 'danger' : task.priority === 'medium' ? 'warning' : 'secondary'} rounded-pill ms-2">${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</span>
+        //         </div>
 
-                <div class="task-dates">
-                    <span class="due-date">Due: ${task.dueDate}</span>
-                    <span class="created-date">Created: ${new Date(task.createdAt).toLocaleDateString()}</span>
-                </div>
+        //         <div class="task-dates">
+        //             <span class="due-date">Due: ${task.dueDate}</span>
+        //             <span class="created-date">Created: ${new Date(task.createdAt).toLocaleDateString()}</span>
+        //         </div>
 
-                <button class="btn btn-sm btn-danger btn-delete">Delete</button> `;
-            if (prepend) {
-                taskList.prepend(taskItem);
-            } else {
-                taskList.appendChild(taskItem);
-            }
+        //         <button class="btn btn-sm btn-danger btn-delete">Delete</button> `;
+        //     if (prepend) {
+        //         taskList.prepend(taskItem);
+        //     } else {
+        //         taskList.appendChild(taskItem);
+        //     }
 
-            // Add event listener to the checkbox
-            const checkbox = taskItem.querySelector('input[type="checkbox"]');
-            checkbox.addEventListener('change', async (e) => {
-                const taskId = e.target.getAttribute('data-task-id');
-                const status = e.target.checked ? 'completed' : 'pending';
-                await updateTaskStatus(taskId, status);
+        //     // Add event listener to the checkbox
+        //     const checkbox = taskItem.querySelector('input[type="checkbox"]');
+        //     checkbox.addEventListener('change', async (e) => {
+        //         const taskId = e.target.getAttribute('data-task-id');
+        //         const status = e.target.checked ? 'completed' : 'pending';
+        //         await updateTaskStatus(taskId, status);
 
-                // Toggle the completed-task class
-                const taskInfo = taskItem.querySelector('.task-info');
-                if (status === 'completed') {
-                    taskInfo.classList.add('completed-task');
-                } else {
-                    taskInfo.classList.remove('completed-task');
-                }
+        //         // Toggle the completed-task class
+        //         const taskInfo = taskItem.querySelector('.task-info');
+        //         if (status === 'completed') {
+        //             taskInfo.classList.add('completed-task');
+        //         } else {
+        //             taskInfo.classList.remove('completed-task');
+        //         }
 
-            });
+        //     });
 
-            //  Add event listener to the delete button
-            const deleteButton = taskItem.querySelector('.btn-delete');
-            deleteButton.addEventListener('click', async (e) => {
+        //     //  Add event listener to the delete button
+        //     const deleteButton = taskItem.querySelector('.btn-delete');
+        //     deleteButton.addEventListener('click', async (e) => {
 
-                console.log(task._id)
-                if (confirm("Are you sure you want to delete this task ?")) {
-                    await deleteTask(task._id);
-                }
-            });
-        }
+        //         console.log(task._id)
+        //         if (confirm("Are you sure you want to delete this task ?")) {
+        //             await deleteTask(task._id);
+        //         }
+        //     });
+        // }
 
         // Function to fetch tasks with pagination
-        async function fetchTasks(page, limit) {
-            if (loading) return;
-            loading = true;
-            try {
-                const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/all?page=${page}&limit=${limit}`, {
-                    method: 'GET',
-                    credentials: 'include', // Include cookies in the request
-                });
+        // async function fetchTasks(page, limit) {
+        //     if (loading) return;
+        //     loading = true;
+        //     try {
+        //         const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/all?page=${page}&limit=${limit}`, {
+        //             method: 'GET',
+        //             credentials: 'include', // Include cookies in the request
+        //         });
 
-                const responseData = await response.json();
+        //         const responseData = await response.json();
 
-                if (response.ok || response.status === 200) {
-                    console.log('Tasks retrieved successfully:', responseData);
-                    responseData.data.forEach(task => addTaskToList(task));
-                    currentPage++;
-                } else {
-                    console.error('Failed to retrieve tasks:', responseData);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            loading = false;
-        }
+        //         if (response.ok || response.status === 200) {
+        //             console.log('Tasks retrieved successfully:', responseData);
+        //             responseData.data.forEach(task => addTaskToList(task));
+        //             currentPage++;
+        //         } else {
+        //             console.error('Failed to retrieve tasks:', responseData);
+        //         }
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //     }
+        //     loading = false;
+        // }
 
         // Infinite scrolling for tasks
-        window.addEventListener('scroll', () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400 && !loading) {
-                fetchTasks(currentPage, limit);
-            }
-        });
+        // window.addEventListener('scroll', () => {
+        //     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400 && !loading) {
+        //         fetchTasks(currentPage, limit);
+        //     }
+        // });
 
         // Initial fetch of tasks
-        fetchTasks(currentPage, limit);
+        // fetchTasks(currentPage, limit);
 
         // Check if the task form exists
-        if (document.getElementById('taskForm')) {
-            const taskForm = document.getElementById('taskForm');
-            const titleInput = document.getElementById('title');
-            const descriptionInput = document.getElementById('description');
-            const dueDateInput = document.getElementById('dueDate');
-            const priorityInput = document.getElementById('priority');
-            const tagsInput = document.getElementById('tags');
+        // if (document.getElementById('taskForm')) {
+        //     const taskForm = document.getElementById('taskForm');
+        //     const titleInput = document.getElementById('title');
+        //     const descriptionInput = document.getElementById('description');
+        //     const dueDateInput = document.getElementById('dueDate');
+        //     const priorityInput = document.getElementById('priority');
+        //     const tagsInput = document.getElementById('tags');
 
-            // Set the min attribute of the dueDate input to today's date
-            const today = new Date().toISOString().split('T')[0];
-            dueDateInput.setAttribute('min', today);
+        //     // Set the min attribute of the dueDate input to today's date
+        //     const today = new Date().toISOString().split('T')[0];
+        //     dueDateInput.setAttribute('min', today);
 
-            // Add submit event listener to the form
-            taskForm.addEventListener("submit", (e) => {
-                e.preventDefault();
+        //     // Add submit event listener to the form
+        //     taskForm.addEventListener("submit", (e) => {
+        //         e.preventDefault();
 
-                // Ensure the input fields exist before accessing their values
-                if (titleInput) {
-                    const title = titleInput.value;
-                    const description = descriptionInput.value;
-                    const dueDate = dueDateInput.value;
-                    const priority = priorityInput.value;
-                    const tags = tagsInput.value.split(',').map(tag => tag.trim());
+        //         // Ensure the input fields exist before accessing their values
+        //         if (titleInput) {
+        //             const title = titleInput.value;
+        //             const description = descriptionInput.value;
+        //             const dueDate = dueDateInput.value;
+        //             const priority = priorityInput.value;
+        //             const tags = tagsInput.value.split(',').map(tag => tag.trim());
 
-                    // Create task object
-                    const task = {
-                        title,
-                        description,
-                        status: "",
-                        dueDate,
-                        priority,
-                        tags,
-                    };
+        //             // Create task object
+        //             const task = {
+        //                 title,
+        //                 description,
+        //                 status: "",
+        //                 dueDate,
+        //                 priority,
+        //                 tags,
+        //             };
 
-                    console.log(task);
+        //             console.log(task);
 
-                    createTask(task);
+        //             createTask(task);
 
-                    taskForm.reset();
-                } else {
-                    console.error('Title field is missing.');
-                    alert('Title field is missing.');
-                }
-            });
-        }
+        //             taskForm.reset();
+        //         } else {
+        //             console.error('Title field is missing.');
+        //             alert('Title field is missing.');
+        //         }
+        //     });
+        // }
     </script>
 </body>
 
