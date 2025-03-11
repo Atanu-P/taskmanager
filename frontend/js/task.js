@@ -1,6 +1,8 @@
 import config from "./config.js";
 import { createTask } from "./createTask.js";
 import { updateTaskStatus } from "./updateTaskStatus.js";
+import { updateTask } from "./updateTask.js";
+import { deleteTask } from "./deleteTask.js";
 
 let currentPage = 1;
 const limit = 10;
@@ -71,64 +73,69 @@ const updateTaskFormModal = new bootstrap.Modal(document.getElementById("updateT
 // }
 
 // Function to update a task <- currently working
-async function updateTask(taskId, task) {
-  try {
-    const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/update/${taskId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(task),
-      credentials: "include", // Include cookies in the request
-    });
+// async function updateTask(taskId, task) {
+//   try {
+//     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/update/${taskId}`, {
+//       method: "PUT",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(task),
+//       credentials: "include", // Include cookies in the request
+//     });
 
-    const responseData = await response.json();
+//     const responseData = await response.json();
 
-    if (response.ok || response.status === 200) {
-      console.log("Task updated successfully:", responseData);
-      // Update the task in the list
-      const taskItem = document.querySelector(`li[id="${taskId}"]`);
-      taskItem.querySelector(".task-info strong").textContent = task.title;
-      taskItem.querySelector(".task-info .badge").textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
-      taskItem.querySelector(".task-info .badge").className = `badge bg-${
-        task.priority === "high" ? "danger" : task.priority === "medium" ? "warning" : "secondary"
-      } rounded-pill ms-2`;
-      taskItem.querySelector(".due-date").textContent = `Due: ${task.dueDate}`;
-      taskItem.querySelector(".created-date").textContent = `Created: ${new Date(task.createdAt).toLocaleDateString()}`;
+//     if (response.ok || response.status === 200) {
+//       console.log("Task updated successfully:", responseData);
+//       // Update the task in the list
+//       // const taskItem = document.querySelector(`li[id="${taskId}"]`);
+//       // taskItem.querySelector(".task-info strong").textContent = task.title;
+//       // taskItem.querySelector(".task-info .badge").textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+//       // taskItem.querySelector(".task-info .badge").className = `badge bg-${
+//       //   task.priority === "high" ? "danger" : task.priority === "medium" ? "warning" : "secondary"
+//       // } rounded-pill ms-2`;
+//       // taskItem.querySelector(".due-date").textContent = `Due: ${task.dueDate}`;
+//       // taskItem.querySelector(".created-date").textContent = `Created: ${new Date(task.createdAt).toLocaleDateString()}`;
 
-      // Hide the update task form modal
-      updateTaskFormModal.hide();
-    } else {
-      console.error("Failed to update task:", responseData);
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
+//       // // Hide the update task form modal
+//       // updateTaskFormModal.hide();
+//       return responseData.data;
+//     } else {
+//       console.error("Failed to update task:", responseData);
+//       return false;
+//     }
+//   } catch (error) {
+//     console.error("Error:", error);
+//   }
+// }
 
 // Function to delete a task
-async function deleteTask(taskId) {
-  try {
-    const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/delete/${taskId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+// async function deleteTask(taskId) {
+//   try {
+//     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/delete/${taskId}`, {
+//       method: "DELETE",
+//       credentials: "include",
+//     });
 
-    const responseData = await response.json();
+//     const responseData = await response.json();
 
-    if (response.ok || response.status === 200) {
-      console.log("Task deleted successfully: ", responseData);
-      // Remove task from the list
-      const task = document.querySelector(`li[id="${taskId}"]`);
-      // console.log(task)
-      task.remove();
-    } else {
-      console.error("Failed to delete task: ", responseData);
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
+//     if (response.ok || response.status === 200) {
+//       console.log("Task deleted successfully: ", responseData);
+//       // Remove task from the list
+//       // const task = document.querySelector(`li[id="${taskId}"]`);
+//       // // console.log(task)
+//       // task.remove();
+
+//       return responseData.data;
+//     } else {
+//       console.error("Failed to delete task: ", responseData);
+//       return false;
+//     }
+//   } catch (error) {
+//     console.error("Error:", error);
+//   }
+// }
 
 // Function to add a task inside unordered list
 function addTaskToList(task, prepend = false) {
@@ -151,7 +158,7 @@ function addTaskToList(task, prepend = false) {
         </div>
 
         <div class="task-dates">
-            <span class="due-date">Due: ${task.dueDate}</span>
+            <span class="due-date">Due: ${task.dueDate?.split("T")[0] || "no due"}</span>
             <span class="created-date">
                 Created: ${new Date(task.createdAt).toLocaleDateString()}
             </span>
@@ -185,7 +192,13 @@ function addTaskToList(task, prepend = false) {
   deleteButton.addEventListener("click", async (e) => {
     console.log(task._id);
     if (confirm("Are you sure you want to delete this task ?")) {
-      await deleteTask(task._id);
+      const data = await deleteTask(task._id);
+      if (data) {
+        // Remove task from the list
+        const task = document.querySelector(`li[id="${data._id}"]`);
+        // console.log(task)
+        task.remove();
+      }
     }
   });
 
@@ -203,14 +216,14 @@ function addTaskToList(task, prepend = false) {
       // Set the default values
       updateTitle.value = task.title;
       updateDescription.value = task.description;
-      updateDueDate.value = task.dueDate.split("T")[0];
+      updateDueDate.value = task.dueDate?.split("T")[0];
       updatePriority.value = task.priority;
       updateTags.value = task.tags.join(", ");
 
       updateFormDefaultValues = {
         title: task.title,
         description: task.description,
-        dueDate: task.dueDate.split("T")[0],
+        dueDate: task.dueDate?.split("T")[0],
         priority: task.priority,
         tags: task.tags.join(", "),
       };
@@ -314,13 +327,14 @@ if (document.getElementById("taskForm")) {
   });
 }
 
+// Check if the update-task form exists
 if (document.getElementById("updateTaskFormModal")) {
   const updateTitle = document.getElementById("updateTitle");
   const updateDescription = document.getElementById("updateDescription");
   const updateDueDate = document.getElementById("updateDueDate");
   const updatePriority = document.getElementById("updatePriority");
   const updateTags = document.getElementById("updateTags");
-  const updateTaskButton = document.getElementById("updateTaskButton");
+  // const updateTaskButton = document.getElementById("updateTaskButton");
 
   // Set the min attribute of the dueDate input to today's date
   const today = new Date().toISOString().split("T")[0];
@@ -340,7 +354,6 @@ if (document.getElementById("updateTaskFormModal")) {
       };
       console.log("newvalue", updatedTask);
       console.log("oldvalue", updateFormDefaultValues);
-      console.log(e);
 
       if (
         updatedTask.title == updateFormDefaultValues.title &&
@@ -351,7 +364,22 @@ if (document.getElementById("updateTaskFormModal")) {
       ) {
         alert("No changes made to the task.");
       } else {
-        await updateTask(taskId, updatedTask);
+        const data = await updateTask(taskId, updatedTask);
+        console.log("data", data);
+
+        if (data) {
+          const taskItem = document.querySelector(`li[id="${data._id}"]`);
+          taskItem.querySelector(".task-info strong").textContent = data.title;
+          taskItem.querySelector(".task-info .badge").textContent =
+            data.priority.charAt(0).toUpperCase() + data.priority.slice(1);
+          taskItem.querySelector(".task-info .badge").className = `badge bg-${
+            data.priority === "high" ? "danger" : data.priority === "medium" ? "warning" : "secondary"
+          } rounded-pill ms-2`;
+          taskItem.querySelector(".due-date").textContent = `Due: ${data.dueDate}`;
+          taskItem.querySelector(".created-date").textContent = `Created: ${new Date(data.createdAt).toLocaleDateString()}`;
+        }
+
+        // Hide the update task form modal
         updateTaskFormModal.hide();
         // window.location.reload();
       }
