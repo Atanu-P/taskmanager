@@ -1,4 +1,6 @@
 import config from "./config.js";
+import { createTask } from "./createTask.js";
+import { updateTaskStatus } from "./updateTaskStatus.js";
 
 let currentPage = 1;
 const limit = 10;
@@ -12,61 +14,61 @@ const taskFormModal = new bootstrap.Modal(document.getElementById("taskFormModal
 const updateTaskFormModal = new bootstrap.Modal(document.getElementById("updateTaskFormModal"));
 
 // Function to create a task
-async function createTask(task) {
-  try {
-    const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(task),
-      credentials: "include", // Include cookies in the request
-    });
+// async function createTask(task) {
+//   try {
+//     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/create`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(task),
+//       credentials: "include", // Include cookies in the request
+//     });
 
-    const responseData = await response.json();
+//     const responseData = await response.json();
 
-    if (response.ok || response.status === 201 || response.message === "Task created successfully") {
-      console.log("Task created successfully:", responseData);
-      // Redirect or update the UI as needed
-      addTaskToList(responseData.data, true);
+//     if (response.ok || response.status === 201 || response.message === "Task created successfully") {
+//       console.log("Task created successfully:", responseData);
+//       // Redirect or update the UI as needed
+//       addTaskToList(responseData.data, true);
 
-      // Hide the task form modal
-      taskFormModal.hide();
-    } else {
-      // Display an error message to the user
-      console.error("Failed to create task:", responseData);
-    }
-  } catch (error) {
-    // Display an error message to the user
-    console.error("Error:", error);
-  }
-}
+//       // Hide the task form modal
+//       taskFormModal.hide();
+//     } else {
+//       // Display an error message to the user
+//       console.error("Failed to create task:", responseData);
+//     }
+//   } catch (error) {
+//     // Display an error message to the user
+//     console.error("Error:", error);
+//   }
+// }
 
 // Function to update-task-status
-async function updateTaskStatus(taskId, status) {
-  try {
-    const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/update-status/${taskId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        status,
-      }),
-      credentials: "include", // Include cookies in the request
-    });
+// async function updateTaskStatus(taskId, status) {
+//   try {
+//     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/update-status/${taskId}`, {
+//       method: "PATCH",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         status,
+//       }),
+//       credentials: "include", // Include cookies in the request
+//     });
 
-    const data = await response.json();
+//     const responseData = await response.json();
 
-    if (response.ok || response.status === 200) {
-      console.log("Task-status updated successfully:", data);
-    } else {
-      console.error("Failed to update-task status:", data);
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
+//     if (response.ok || response.status === 200) {
+//       console.log("Task-status updated successfully:", responseData);
+//     } else {
+//       console.error("Failed to update-task status:", responseData);
+//     }
+//   } catch (error) {
+//     console.error("Error:", error);
+//   }
+// }
 
 // Function to update a task <- currently working
 async function updateTask(taskId, task) {
@@ -272,7 +274,7 @@ if (document.getElementById("taskForm")) {
   dueDateInput.setAttribute("min", today);
 
   // Add submit event listener to the form
-  taskForm.addEventListener("submit", (e) => {
+  taskForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     // Ensure the input fields exist before accessing their values
@@ -295,8 +297,15 @@ if (document.getElementById("taskForm")) {
 
       console.log(task);
 
-      createTask(task);
+      const data = await createTask(task);
 
+      if (data) {
+        addTaskToList(data, true);
+      } else {
+        console.error("Failed to create task.", data);
+      }
+
+      taskFormModal.hide();
       taskForm.reset();
     } else {
       console.error("Title field is missing.");
