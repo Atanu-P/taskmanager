@@ -381,7 +381,7 @@ if (document.getElementById("updateTaskFormModal")) {
 
         // Hide the update task form modal
         updateTaskFormModal.hide();
-        // window.location.reload();
+        window.location.reload();
       }
     } else {
       console.error("Title field is missing.");
