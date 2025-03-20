@@ -31,5 +31,5 @@ temp/
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
-.pdf
-.docx
+*.pdf
+*.docx
