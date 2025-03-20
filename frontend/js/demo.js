@@ -3,7 +3,53 @@ const limit = 10;
 let loading = false;
 
 let updateFormDefaultValues = {};
-let tasks = [];
+// array of demo tasks
+let tasks = [
+  {
+    createdAt: "2025-03-20T10:26:55.051Z",
+    description: "Fill university exam form, and pay exam fee to admin office in college before May",
+    dueDate: "2025-04-05",
+    priority: "high",
+    status: "pending",
+    tags: ["college", "study", "exam"],
+    title: "Submit college Exam-Form",
+    updatedAt: "2025-03-20T10:26:55.052Z",
+    _id: "ox9a1mhtg",
+  },
+  {
+    createdAt: "2025-03-20T10:26:55.051Z",
+    description: "Submit the assignment to the respective teacher before April",
+    dueDate: "2025-03-30",
+    priority: "medium",
+    status: "pending",
+    tags: ["college", "study"],
+    title: "Submit Assignment",
+    updatedAt: "2025-03-20T10:26:55.052Z",
+    _id: "ox9a1mhfd",
+  },
+  {
+    createdAt: "2025-03-20T10:26:55.051Z",
+    description: "Recharge your sim card on April 1st",
+    dueDate: "2025-04-01",
+    priority: "low",
+    status: "pending",
+    tags: ["personal"],
+    title: "Recharge sim card",
+    updatedAt: "2025-03-20T10:26:55.052Z",
+    _id: "ox9a1mhtt",
+  },
+  {
+    createdAt: "2025-03-20T10:26:55.051Z",
+    description: "click on the checkbox to mark the task as completed",
+    dueDate: "",
+    priority: "low",
+    status: "pending",
+    tags: ["demo"],
+    title: "👆 These are the demo tasks",
+    updatedAt: "2025-03-20T10:26:55.052Z",
+    _id: "ox9a1mhsr",
+  },
+];
 
 function checkNoTasksMessage() {
   const noTasksMessage = document.getElementById("noTasksMessage");
@@ -64,6 +110,8 @@ function addTaskToList(task, prepend = false) {
   } else {
     taskList.appendChild(taskItem);
   }
+
+  checkNoTasksMessage();
 
   // Add event listener to the checkbox
   const checkbox = taskItem.querySelector('input[type="checkbox"]');
@@ -136,8 +184,11 @@ function addTaskToList(task, prepend = false) {
   });
 }
 
+tasks.forEach((task) => addTaskToList(task));
+
 // Check if the task form exists
 if (document.getElementById("taskForm")) {
+  console.log("taskForm exists");
   const taskForm = document.getElementById("taskForm");
   const titleInput = document.getElementById("title");
   const descriptionInput = document.getElementById("description");
@@ -180,6 +231,7 @@ if (document.getElementById("taskForm")) {
       taskFormModal.hide();
       taskForm.reset();
       checkNoTasksMessage();
+      console.log(tasks);
     } else {
       console.error("Title field is missing.");
       alert("Title field is missing.");
