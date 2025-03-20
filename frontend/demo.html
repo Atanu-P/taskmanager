@@ -120,17 +120,14 @@
         <div class="todo-container">
             <!-- <h4>Welcome, <span id="username">Demo</span></h4> -->
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
-                <p style="font-size: 12px;">This is a demo page. Tasks will not be saved permanently. After reloading the page, all tasks will be cleared</p>
+                <p style="font-size: 12px;">This is a demo page. Tasks will not be saved permanently. After reloading the page, all tasks will be cleared. To save your tasks and access them later, please <a href="index.html" class="link-primary text-decoration-none">Log In</a> or <a href="register.html" class="link-primary text-decoration-none">Sign up</a></p>
                 <button id="newtask" class="btn btn-success me-sm-2 btn-sm" style="border-radius: 10px;" type="button" data-bs-toggle="modal" data-bs-target="#taskFormModal">+ New Task</button>
                 <!-- <button id="logout" class="btn btn-secondary btn-sm" style="border-radius: 10px;" type="button">Logout</button> -->
             </div>
         </div>
         <div class="todo-container" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 75vh;">
             <!-- <h3 class="text-center">Todo List</h3> -->
-            <div id="noTasksMessage" class="no-tasks-message" style="display: block; text-align: center;
-            color: #6c757d;
-            font-size: 1.2rem;
-            margin-top: 20px;">
+            <div id="noTasksMessage" class="no-tasks-message" style="display: block; text-align: center; color: #6c757d; font-size: 1.2rem; margin-top: 20px;">
                 No tasks available. Add a new task to get started!
             </div>
             <ul class="list-group" id="taskList">
