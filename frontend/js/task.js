@@ -7,135 +7,12 @@ import { deleteTask } from "./deleteTask.js";
 let currentPage = 1;
 const limit = 10;
 let loading = false;
-
 let updateFormDefaultValues = {};
 let taskId;
 
 // Get the task form modal
 const taskFormModal = new bootstrap.Modal(document.getElementById("taskFormModal"));
 const updateTaskFormModal = new bootstrap.Modal(document.getElementById("updateTaskFormModal"));
-
-// Function to create a task
-// async function createTask(task) {
-//   try {
-//     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/create`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(task),
-//       credentials: "include", // Include cookies in the request
-//     });
-
-//     const responseData = await response.json();
-
-//     if (response.ok || response.status === 201 || response.message === "Task created successfully") {
-//       console.log("Task created successfully:", responseData);
-//       // Redirect or update the UI as needed
-//       addTaskToList(responseData.data, true);
-
-//       // Hide the task form modal
-//       taskFormModal.hide();
-//     } else {
-//       // Display an error message to the user
-//       console.error("Failed to create task:", responseData);
-//     }
-//   } catch (error) {
-//     // Display an error message to the user
-//     console.error("Error:", error);
-//   }
-// }
-
-// Function to update-task-status
-// async function updateTaskStatus(taskId, status) {
-//   try {
-//     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/update-status/${taskId}`, {
-//       method: "PATCH",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         status,
-//       }),
-//       credentials: "include", // Include cookies in the request
-//     });
-
-//     const responseData = await response.json();
-
-//     if (response.ok || response.status === 200) {
-//       console.log("Task-status updated successfully:", responseData);
-//     } else {
-//       console.error("Failed to update-task status:", responseData);
-//     }
-//   } catch (error) {
-//     console.error("Error:", error);
-//   }
-// }
-
-// Function to update a task <- currently working
-// async function updateTask(taskId, task) {
-//   try {
-//     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/update/${taskId}`, {
-//       method: "PUT",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(task),
-//       credentials: "include", // Include cookies in the request
-//     });
-
-//     const responseData = await response.json();
-
-//     if (response.ok || response.status === 200) {
-//       console.log("Task updated successfully:", responseData);
-//       // Update the task in the list
-//       // const taskItem = document.querySelector(`li[id="${taskId}"]`);
-//       // taskItem.querySelector(".task-info strong").textContent = task.title;
-//       // taskItem.querySelector(".task-info .badge").textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
-//       // taskItem.querySelector(".task-info .badge").className = `badge bg-${
-//       //   task.priority === "high" ? "danger" : task.priority === "medium" ? "warning" : "secondary"
-//       // } rounded-pill ms-2`;
-//       // taskItem.querySelector(".due-date").textContent = `Due: ${task.dueDate}`;
-//       // taskItem.querySelector(".created-date").textContent = `Created: ${new Date(task.createdAt).toLocaleDateString()}`;
-
-//       // // Hide the update task form modal
-//       // updateTaskFormModal.hide();
-//       return responseData.data;
-//     } else {
-//       console.error("Failed to update task:", responseData);
-//       return false;
-//     }
-//   } catch (error) {
-//     console.error("Error:", error);
-//   }
-// }
-
-// Function to delete a task
-// async function deleteTask(taskId) {
-//   try {
-//     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/delete/${taskId}`, {
-//       method: "DELETE",
-//       credentials: "include",
-//     });
-
-//     const responseData = await response.json();
-
-//     if (response.ok || response.status === 200) {
-//       console.log("Task deleted successfully: ", responseData);
-//       // Remove task from the list
-//       // const task = document.querySelector(`li[id="${taskId}"]`);
-//       // // console.log(task)
-//       // task.remove();
-
-//       return responseData.data;
-//     } else {
-//       console.error("Failed to delete task: ", responseData);
-//       return false;
-//     }
-//   } catch (error) {
-//     console.error("Error:", error);
-//   }
-// }
 
 // Function to add a task inside unordered list
 function addTaskToList(task, prepend = false) {
@@ -210,7 +87,8 @@ function addTaskToList(task, prepend = false) {
       const updateDueDate = document.getElementById("updateDueDate");
       const updatePriority = document.getElementById("updatePriority");
       const updateTags = document.getElementById("updateTags");
-      const updateTaskButton = document.getElementById("updateTaskButton");
+
+      // const updateTaskButton = document.getElementById("updateTaskButton");
 
       console.log("click", task);
       // Set the default values
@@ -241,7 +119,9 @@ function addTaskToList(task, prepend = false) {
 // Function to fetch tasks with pagination
 async function fetchTasks(page, limit) {
   if (loading) return;
+
   loading = true;
+
   try {
     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/all?page=${page}&limit=${limit}`, {
       method: "GET",
@@ -252,8 +132,14 @@ async function fetchTasks(page, limit) {
 
     if (response.ok || response.status === 200) {
       console.log("Tasks retrieved successfully:", responseData);
-      responseData.data.forEach((task) => addTaskToList(task));
-      currentPage++;
+
+      if (responseData.data.length <= 0) {
+        const noTasksMessage = document.getElementById("noTasksMessage");
+        noTasksMessage.style.display = "block";
+      } else {
+        responseData.data.forEach((task) => addTaskToList(task));
+        currentPage++;
+      }
     } else {
       console.error("Failed to retrieve tasks:", responseData);
     }
@@ -263,6 +149,9 @@ async function fetchTasks(page, limit) {
   loading = false;
 }
 
+// Initial fetch of 10 tasks
+fetchTasks(currentPage, limit);
+
 // Infinite scrolling for tasks
 window.addEventListener("scroll", () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400 && !loading) {
@@ -270,10 +159,7 @@ window.addEventListener("scroll", () => {
   }
 });
 
-// Initial fetch of tasks
-fetchTasks(currentPage, limit);
-
-// Check if the task form exists
+// Check if the Add-task-form exists
 if (document.getElementById("taskForm")) {
   const taskForm = document.getElementById("taskForm");
   const titleInput = document.getElementById("title");
@@ -327,7 +213,7 @@ if (document.getElementById("taskForm")) {
   });
 }
 
-// Check if the update-task form exists
+// Check if the update-task-form exists
 if (document.getElementById("updateTaskFormModal")) {
   const updateTitle = document.getElementById("updateTitle");
   const updateDescription = document.getElementById("updateDescription");
