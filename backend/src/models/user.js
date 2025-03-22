@@ -30,6 +30,8 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// Define functions within schema
+
 // Hash the password before saving the user model
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
@@ -38,6 +40,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+// Generate access token
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
@@ -52,6 +55,7 @@ userSchema.methods.generateAccessToken = function () {
   );
 };
 
+// Generate refresh token
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
@@ -64,9 +68,11 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
+// Check if the password is correct
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
