@@ -1,5 +1,7 @@
 import config from "./config.js";
 
+// Delete task
+
 export async function deleteTask(taskId) {
   try {
     const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/delete/${taskId}`, {

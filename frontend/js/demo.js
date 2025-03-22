@@ -1,8 +1,8 @@
 let currentPage = 1;
 const limit = 10;
 let loading = false;
-
 let updateFormDefaultValues = {};
+
 // array of demo tasks
 let tasks = [
   {
@@ -51,6 +51,11 @@ let tasks = [
   },
 ];
 
+// Get the task form modal
+const taskFormModal = new bootstrap.Modal(document.getElementById("taskFormModal"));
+const updateTaskFormModal = new bootstrap.Modal(document.getElementById("updateTaskFormModal"));
+
+// Function to check if there are no tasks in the list and display a message
 function checkNoTasksMessage() {
   const noTasksMessage = document.getElementById("noTasksMessage");
   if (tasks.length === 0) {
@@ -60,9 +65,7 @@ function checkNoTasksMessage() {
   }
 }
 
-// Get the task form modal
-const taskFormModal = new bootstrap.Modal(document.getElementById("taskFormModal"));
-const updateTaskFormModal = new bootstrap.Modal(document.getElementById("updateTaskFormModal"));
+// Function to format the task object
 function formateDemoTask(task) {
   return {
     createdAt: task.createdAt || new Date().toISOString(),
@@ -184,9 +187,10 @@ function addTaskToList(task, prepend = false) {
   });
 }
 
+// Add tasks from array to the UI
 tasks.forEach((task) => addTaskToList(task));
 
-// Check if the task form exists
+// Check if the Add-task-form exists
 if (document.getElementById("taskForm")) {
   console.log("taskForm exists");
   const taskForm = document.getElementById("taskForm");
@@ -239,6 +243,7 @@ if (document.getElementById("taskForm")) {
   });
 }
 
+// Check if the update-task-form exists
 if (document.getElementById("updateTaskFormModal")) {
   const updateTitle = document.getElementById("updateTitle");
   const updateDescription = document.getElementById("updateDescription");
@@ -315,14 +320,14 @@ if (document.getElementById("updateTaskFormModal")) {
   });
 }
 
-{
-  createdAt: "2025-03-18T11:46:11.790Z";
-  description: "";
-  dueDate: "2025-03-19T00:00:00.000Z";
-  priority: "medium";
-  status: "pending";
-  tags: [""];
-  title: "task 46";
-  updatedAt: "2025-03-18T11:46:11.790Z";
-  _id: "67d95d037cd085dd1aeeb92e";
-}
+// {
+//   createdAt: "2025-03-18T11:46:11.790Z";
+//   description: "";
+//   dueDate: "2025-03-19T00:00:00.000Z";
+//   priority: "medium";
+//   status: "pending";
+//   tags: [""];
+//   title: "task 46";
+//   updatedAt: "2025-03-18T11:46:11.790Z";
+//   _id: "67d95d037cd085dd1aeeb92e";
+// }

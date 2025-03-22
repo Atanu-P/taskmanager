@@ -1,6 +1,6 @@
 import config from "./config.js";
 
-// Function to handle login
+// Function to handle logout
 export default async function logout() {
   if (confirm("Are you sure you want to logout?")) {
     try {
@@ -25,6 +25,6 @@ export default async function logout() {
       console.error("Error:", error);
       // Display an error message to the user
     }
-    window.location.href = "index.html";
+    // window.location.href = "index.html";
   }
 }
