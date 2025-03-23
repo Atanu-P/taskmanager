@@ -63,7 +63,7 @@ TaskManager is a Node.js application for managing tasks. This README will guide 
 or 
 
    Start the server in development mode command:
-```bash
+    ```bash
     cd backend && npm run dev
     ```
 2. The server should now be running on `http://localhost:3000`.
