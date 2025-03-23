@@ -36,7 +36,7 @@ TaskManager is a Node.js application for managing tasks. This README will guide 
     ```
 3. Navigate to the project directory:
     ```bash
-    cd taskmanager
+    cd taskmanager && cd backend
     ```
 
 ### Install Dependencies
