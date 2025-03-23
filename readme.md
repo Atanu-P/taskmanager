@@ -60,6 +60,12 @@ TaskManager is a Node.js application for managing tasks. This README will guide 
     ```bash
     cd backend && npm start
     ```
+or 
+
+   Start the server in development mode command:
+```bash
+    cd backend && npm run dev
+    ```
 2. The server should now be running on `http://localhost:3000`.
 
 ### Open in Browser
@@ -94,3 +100,4 @@ TaskManager is a Node.js application for managing tasks. This README will guide 
     ```
 4. You can now interact with the `taskmanager` database.
 
+## Use API testingtools such as Postman.
