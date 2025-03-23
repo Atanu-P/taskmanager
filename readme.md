@@ -65,6 +65,10 @@ TaskManager is a Node.js application for managing tasks. This README will guide 
 ### Open in Browser
 1. Open your browser and navigate to `http://localhost:3000`.
 
+2. Test api url `http://localhost:3000/api`.
+
+### If response shows status:200 output on browser, then Api server running successfully.
+
 ## Setting up MongoDB Locally
 
 ### Install MongoDB
