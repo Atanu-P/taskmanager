@@ -27,17 +27,11 @@ export default async function register(username, email, password) {
       console.log("Registration successful:", data);
       // Redirect to another page or update the UI as needed
       window.location.href = "task.html";
-    } else if (
-      response.status === 400 &&
-      data.message === "User already exists"
-    ) {
+    } else if (response.status === 400 && data.message === "User already exists") {
       console.error("Registration failed:", data.message);
       // Display an alert with the error message
-      alert("User already exists");
-    } else if (
-      response.status === 400 &&
-      data.message === "All fields are required"
-    ) {
+      alert("User with email already exists");
+    } else if (response.status === 400 && data.message === "All fields are required") {
       console.error("Registration failed:", data.message);
       // Display an alert with the error message
       // alert('All fields are required');
