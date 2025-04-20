@@ -28,18 +28,24 @@
                             </div>
                             <h2 class="fs-6 fw-normal text-center text-danger mb-4">Login to your account</h2>
                             <!-- login-in form start-->
-                            <form action="" id="loginForm">
+                            <form action="" id="loginForm" novalidate>
                                 <div class="row gy-2 overflow-hidden">
                                     <div class="col-12">
                                         <div class="form-floating mb-3">
                                             <input type="email" class="form-control" name="email" id="email" placeholder="" required>
                                             <label for="email" class="form-label">Email</label>
+                                            <div class="invalid-feedback">
+                                                Please enter a valid email address.
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-floating mb-3">
                                             <input type="password" class="form-control" name="password" id="password" placeholder="" required>
                                             <label for="password" class="form-label">Password</label>
+                                            <div class="invalid-feedback">
+                                                Please enter your password.
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- <div class="col-12">
@@ -163,16 +169,35 @@
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                // Ensure the input fields exist before accessing their values
+                // Reset validation classes
+                emailInput.classList.remove('is-invalid');
+                passwordInput.classList.remove('is-invalid');
+
+                // Ensure input fields exist before accessing their values
                 if (emailInput && passwordInput) {
                     const email = emailInput.value;
                     const password = passwordInput.value;
+                    let isValid = true;
 
                     console.log(email, password);
                     // alert(email + password);
 
-                    login(email, password)
+                    if (!emailInput.value.trim()) {
+                        emailInput.classList.add('is-invalid');
+                        isValid = false;
+                    }
+
+                    if (!passwordInput.value.trim()) {
+                        passwordInput.classList.add('is-invalid');
+                        isValid = false;
+                    }
+
+                    if (isValid) {
+                        login(email, password)
+                    }
+
                 } else {
+
                     console.error('Email or password input field is missing.');
                 }
             });

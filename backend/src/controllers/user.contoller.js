@@ -94,15 +94,15 @@ exports.registerUser = async (req, res, next) => {
 // Login-user controller
 exports.loginUser = async (req, res, next) => {
   try {
-    const { email, username, password } = req.body;
-    console.log({ email, username, password });
+    const { email, password } = req.body;
+    console.log({ email, password });
 
-    if (!username && !email) {
+    if (!email) {
       throw new ApiError(400, "username or email is required");
     }
 
     const user = await User.findOne({
-      $or: [{ username }, { email }],
+      email: email?.toLowerCase() || null,
     });
 
     if (!user) {
