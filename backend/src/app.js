@@ -1,11 +1,12 @@
-// Import the modules
+// Import modules
 const express = require("express");
 const morgan = require("morgan");
 const apiRoutes = require("./routes");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
-// Create an instance of an Express application
+
+// instance of an Express application
 const app = express();
 
 /* Middleware */
@@ -29,12 +30,12 @@ app.use(morgan("dev"));
 
 app.use(apiRoutes);
 
-// Define a simple route for the root URL
+// simple route for the root URL testing
 app.get("/helloworld", (req, res) => {
   res.status(200);
   res.json({
     statusCode: 200,
-    message: "Hello, world!",
+    message: "Hello, world!! This is a test API response",
     success: true,
   });
   // res.send("Hello, world!");
@@ -44,7 +45,7 @@ app.get("/helloworld", (req, res) => {
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, "../../frontend")));
 
-// Serve index.html for all unknown routes (useful for single-page apps)
+// Serve index.html for all unknown routes
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../../frontend/index.html"));
 });
