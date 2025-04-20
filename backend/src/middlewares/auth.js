@@ -4,9 +4,7 @@ const ApiError = require("../utils/ApiError");
 
 const auth = async (req, res, next) => {
   try {
-    const token =
-      req.cookies?.accessToken ||
-      req.header("Authorization")?.replace("Bearer ", "");
+    const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
 
     // console.log(token);
     if (!token) {
@@ -15,9 +13,7 @@ const auth = async (req, res, next) => {
 
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-    const user = await User.findById(decodedToken?._id).select(
-      "-password -refreshToken"
-    );
+    const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
 
     if (!user) {
       throw new ApiError(401, "Invalid Access Token");
@@ -26,6 +22,9 @@ const auth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    if (error == "TokenExpiredError: jwt expired") {
+      next(new ApiError(401, "Token expired"));
+    }
     next(error);
   }
 };
