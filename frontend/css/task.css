@@ -79,6 +79,12 @@
   text-decoration: line-through;
 }
 
+h5#welcome-text {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
 @media (max-width: 800px) {
   /* .todo-item {
         flex-direction: column;
@@ -102,6 +108,11 @@
         align-self: flex-end;
         margin-top: 8px;
     } */
+  h5#welcome-text {
+    font-size: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
 
   .due-date {
     font-weight: lighter;

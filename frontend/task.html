@@ -14,7 +14,7 @@
 <body class="bg-dark-subtle">
     <div class="container">
         <div class="todo-container">
-            <h5 class="text-body-secondary">Welcome, <span id="username" style="text-transform: capitalize"></span> !! Let’s get things done 😎</h5>
+            <h5 class="text-body-secondary" id="welcome-text">Welcome, <span id="username" style="text-transform: capitalize"></span> !! Let’s get things done <i class="bi bi-check-circle-fill"></i></h5>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
                 <button id="newtask" class="btn btn-success me-sm-2 btn-sm" style="border-radius: 10px;" type="button" data-bs-toggle="modal" data-bs-target="#taskFormModal">+ New Task</button>
                 <button id="logout" class="btn btn-secondary btn-sm" style="border-radius: 10px;" type="button">Logout</button>
@@ -23,9 +23,9 @@
         <div class="todo-container">
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
                 <select id="taskFilter" class="form-select form-select-sm" style="width: auto;">
-                    <option value="all">All</option>
-                    <option value="pending">Pending</option>
-                    <option value="completed">Completed</option>
+                    <option value="all">All Task</option>
+                    <option value="pending">Pending Task</option>
+                    <option value="completed">Completed Task</option>
                 </select>
                 <select id="taskSort" class="form-select form-select-sm" style="width: auto;">
                     <option value="date_new">By Date (Newest First)</option>
@@ -34,16 +34,15 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="todo-container" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 75vh;">
-        <!-- <h3 class="text-center">Todo List</h3> -->
-        <div id="noTasksMessage" class="no-tasks-message" style="display: none; text-align: center; color: #6c757d; font-size: 1.2rem; margin-top: 20px;">
-            No tasks available. Add a new task to get started!
+        <div class="todo-container" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 75vh;">
+            <!-- <h3 class="text-center">Todo List</h3> -->
+            <div id="noTasksMessage" class="no-tasks-message" style="display: none; text-align: center; color: #6c757d; font-size: 1.2rem; margin-top: 20px;">
+                No tasks available. Add a new task to get started!
+            </div>
+            <ul class="list-group" id="taskList">
+                <!-- ALL THE TASKS FETCHED HERE -->
+            </ul>
         </div>
-        <ul class="list-group" id="taskList">
-            <!-- ALL THE TASKS FETCHED HERE -->
-        </ul>
-    </div>
     </div>
 
     <!-- Add-task Form Modal for Adding New Task -->
