@@ -20,9 +20,9 @@ const taskSchema = new mongoose.Schema(
       type: Date,
     },
     priority: {
-      type: String,
-      enum: ["low", "medium", "high"],
-      default: "low",
+      type: Number,
+      enum: [1, 2, 3], // 1: High, 2: Medium, 3: Low
+      default: 3,
     },
     tags: {
       type: [String], // Array of strings for tags

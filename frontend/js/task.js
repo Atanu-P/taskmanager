@@ -8,6 +8,7 @@ let currentPage = 1;
 const limit = 10;
 let loading = false;
 let currentFilter = "all"; // Default filter
+let currentSort = "date_new"; // Default sort
 let updateFormDefaultValues = {};
 let taskId;
 
@@ -30,8 +31,8 @@ function addTaskToList(task, prepend = false) {
         ${task.status === "completed" ? "completed-task" : ""}">
             <strong>${task.title}</strong>
             <span class="badge 
-            bg-${task.priority === "high" ? "danger" : task.priority === "medium" ? "warning" : "secondary"} rounded-pill ms-2">
-             ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+            bg-${task.priority == 1 ? "danger" : task.priority == 2 ? "warning" : "secondary"} rounded-pill ms-2">
+             ${task.priority == 1 ? "High" : task.priority == 2 ? "Medium" : "Low"}
             </span>
         </div>
 
@@ -57,7 +58,7 @@ function addTaskToList(task, prepend = false) {
     const taskId = e.target.getAttribute("data-task-id");
     const status = e.target.checked ? "completed" : "pending";
     await updateTaskStatus(taskId, status);
-
+    // console.log(e.target.checked);
     // Toggle the completed-task class
     const taskInfo = taskItem.querySelector(".task-info");
     if (status === "completed") {
@@ -90,10 +91,12 @@ function addTaskToList(task, prepend = false) {
       const updateDueDate = document.getElementById("updateDueDate");
       const updatePriority = document.getElementById("updatePriority");
       const updateTags = document.getElementById("updateTags");
+      const taskStatus = document.getElementById("taskStatus");
 
-      // const updateTaskButton = document.getElementById("updateTaskButton");
-      console.log(e.target.tagName);
-      console.log("click", task);
+      const isChecked = taskItem.querySelector('input[type="checkbox"]').checked;
+      taskStatus.innerHTML = `${isChecked ? " ✅ Completed !!" : " ⚠️ Pending..."}`;
+      console.log(isChecked);
+      // console.log("click", task.checked);
       // Set the default values
       updateTitle.value = task.title;
       updateDescription.value = task.description;
@@ -120,16 +123,19 @@ function addTaskToList(task, prepend = false) {
 }
 
 // Function to fetch tasks with pagination
-async function fetchTasks(page, limit, filter = "all") {
+async function fetchTasks(page, limit, filter = "all", sort = "date_new") {
   if (loading) return;
 
   loading = true;
 
   try {
-    const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/all?page=${page}&limit=${limit}&filter=${filter}`, {
-      method: "GET",
-      credentials: "include", // Include cookies in the request
-    });
+    const response = await fetch(
+      `${config.apiBaseUrl}api/v1/tasks/all?page=${page}&limit=${limit}&filter=${filter}&sort=${sort}`,
+      {
+        method: "GET",
+        credentials: "include", // Include cookies in the request
+      }
+    );
 
     const responseData = await response.json();
 
@@ -138,7 +144,7 @@ async function fetchTasks(page, limit, filter = "all") {
 
       const taskList = document.getElementById("taskList");
       if (page === 1) {
-        // Clear the task list for new filtered tasks
+        // Clear the task list for new filtered or sorted tasks
         taskList.innerHTML = "";
       }
 
@@ -159,12 +165,12 @@ async function fetchTasks(page, limit, filter = "all") {
 }
 
 // Initial fetch of 10 tasks
-fetchTasks(currentPage, limit, currentFilter);
+fetchTasks(currentPage, limit, currentFilter, currentSort);
 
 // Infinite scrolling for tasks
 window.addEventListener("scroll", () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400 && !loading) {
-    fetchTasks(currentPage, limit, currentFilter);
+    fetchTasks(currentPage, limit, currentFilter, currentSort);
   }
 });
 
@@ -174,7 +180,16 @@ taskFilter.addEventListener("change", (e) => {
   // console.log(e.target.value);
   currentFilter = e.target.value;
   currentPage = 1; // Reset to the first page
-  fetchTasks(currentPage, limit, currentFilter);
+  fetchTasks(currentPage, limit, currentFilter, currentSort);
+});
+
+// Event listener for the task sorting dropdown
+const taskSort = document.getElementById("taskSort");
+taskSort.addEventListener("change", (e) => {
+  // console.log(e.target.value);
+  currentSort = e.target.value;
+  currentPage = 1; // Reset to the first page
+  fetchTasks(currentPage, limit, currentFilter, currentSort);
 });
 
 // Check if the Add-task-form exists
@@ -274,10 +289,11 @@ if (document.getElementById("updateTaskFormModal")) {
         if (data) {
           const taskItem = document.querySelector(`li[id="${data._id}"]`);
           taskItem.querySelector(".task-info strong").textContent = data.title;
-          taskItem.querySelector(".task-info .badge").textContent =
-            data.priority.charAt(0).toUpperCase() + data.priority.slice(1);
+          taskItem.querySelector(".task-info .badge").textContent = `${
+            data.priority == 1 ? "High" : data.priority == 2 ? "Medium" : "Low"
+          }`;
           taskItem.querySelector(".task-info .badge").className = `badge bg-${
-            data.priority === "high" ? "danger" : data.priority === "medium" ? "warning" : "secondary"
+            data.priority == 1 ? "danger" : data.priority == 2 ? "warning" : "secondary"
           } rounded-pill ms-2`;
           taskItem.querySelector(".due-date").textContent = `Due: ${data.dueDate}`;
           taskItem.querySelector(".created-date").textContent = `Created: ${new Date(data.createdAt).toLocaleDateString()}`;

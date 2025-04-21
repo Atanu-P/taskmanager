@@ -52,15 +52,27 @@ exports.getAllTasks = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
     const filter = req.query.filter || "all";
+    const sort = req.query.sort || "date_new";
 
+    /* query based on the filter */
     let query = { user: userId }; //default query
     if (filter !== "all") {
       query.status = filter; // query with task filter
     }
 
+    /* task sorting order */
+    let sortOrder = {};
+    if (sort === "date_new") {
+      sortOrder = { createdAt: -1 }; // Newest first
+    } else if (sort === "date_old") {
+      sortOrder = { createdAt: 1 }; // Oldest first
+    } else if (sort === "priority") {
+      sortOrder = { priority: 1 }; // Sort by priority (1 to 3) high to low
+    }
+
     // Find all tasks for the authenticated user
     const tasks = await Task.find(query)
-      .sort({ createdAt: -1 }) // Sort by creation date in descending order
+      .sort(sortOrder) // Sort by creation date in descending order
       .skip(skip)
       .limit(limit);
 

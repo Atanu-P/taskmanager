@@ -21,21 +21,29 @@
             </div>
         </div>
         <div class="todo-container">
-            <select id="taskFilter" class="form-select form-select-sm" style="width: auto;">
-                <option value="all">All</option>
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
-            </select>
-        </div>
-        <div class="todo-container" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 75vh;">
-            <!-- <h3 class="text-center">Todo List</h3> -->
-            <div id="noTasksMessage" class="no-tasks-message" style="display: none; text-align: center; color: #6c757d; font-size: 1.2rem; margin-top: 20px;">
-                No tasks available. Add a new task to get started!
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
+                <select id="taskFilter" class="form-select form-select-sm" style="width: auto;">
+                    <option value="all">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <select id="taskSort" class="form-select form-select-sm" style="width: auto;">
+                    <option value="date_new">By Date (Newest First)</option>
+                    <option value="date_old">By Date (Oldest First)</option>
+                    <option value="priority">By Priority</option>
+                </select>
             </div>
-            <ul class="list-group" id="taskList">
-                <!-- ALL THE TASKS FETCHED HERE -->
-            </ul>
         </div>
+    </div>
+    <div class="todo-container" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 75vh;">
+        <!-- <h3 class="text-center">Todo List</h3> -->
+        <div id="noTasksMessage" class="no-tasks-message" style="display: none; text-align: center; color: #6c757d; font-size: 1.2rem; margin-top: 20px;">
+            No tasks available. Add a new task to get started!
+        </div>
+        <ul class="list-group" id="taskList">
+            <!-- ALL THE TASKS FETCHED HERE -->
+        </ul>
+    </div>
     </div>
 
     <!-- Add-task Form Modal for Adding New Task -->
@@ -66,9 +74,9 @@
                         <div class="mb-3">
                             <label for="priority" class="form-label">Priority</label>
                             <select class="form-select" id="priority" name="priority">
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
+                                <option value="3">Low</option>
+                                <option value="2">Medium</option>
+                                <option value="1">High</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -88,7 +96,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateTaskFormModalLabel">Update Task</h5>
+                    <!-- <h5 class="modal-title" id="updateTaskFormModalLabel">Update Task</h5> -->
+                    <h5 class="modal-title" id="taskStatus"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -108,9 +117,9 @@
                         <div class="mb-3">
                             <label for="updatePriority" class="form-label">Priority</label>
                             <select class="form-select" id="updatePriority" name="priority">
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
+                                <option value="3">Low</option>
+                                <option value="2">Medium</option>
+                                <option value="1">High</option>
                             </select>
                         </div>
                         <div class="mb-3">
