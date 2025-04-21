@@ -29,7 +29,7 @@ function addTaskToList(task, prepend = false) {
 
         <div class="task-info 
         ${task.status === "completed" ? "completed-task" : ""}">
-            <strong>${task.title}</strong>
+            <p class="task-title">${task.title}</p>
             <span class="badge 
             bg-${task.priority == 1 ? "danger" : task.priority == 2 ? "warning" : "secondary"} rounded-pill ms-2">
              ${task.priority == 1 ? "High" : task.priority == 2 ? "Medium" : "Low"}
@@ -148,10 +148,11 @@ async function fetchTasks(page, limit, filter = "all", sort = "date_new") {
         taskList.innerHTML = "";
       }
 
+      const noTasksMessage = document.getElementById("noTasksMessage");
       if (responseData.data.length <= 0 && page === 1) {
-        const noTasksMessage = document.getElementById("noTasksMessage");
         noTasksMessage.style.display = "block";
       } else {
+        noTasksMessage.style.display = "none";
         responseData.data.forEach((task) => addTaskToList(task));
         currentPage++;
       }

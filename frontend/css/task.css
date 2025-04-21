@@ -77,12 +77,19 @@
 
 .completed-task {
   text-decoration: line-through;
+  text-decoration-thickness: 2px;
 }
 
 h5#welcome-text {
   font-size: 1.5rem;
   margin-bottom: 30px;
   text-align: center;
+}
+
+@media (min-width: 801px) {
+  .task-title {
+    display: inline;
+  }
 }
 
 @media (max-width: 800px) {
@@ -108,6 +115,31 @@ h5#welcome-text {
         align-self: flex-end;
         margin-top: 8px;
     } */
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    border-left: 0px;
+    border-right: 0px;
+    border-radius: 0px !important;
+  }
+
+  .task-item input[type="checkbox"] {
+    margin-right: 12px;
+    margin-bottom: 10px;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+  }
+
+  .task-title {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
   h5#welcome-text {
     font-size: 15px;
     margin-bottom: 20px;
