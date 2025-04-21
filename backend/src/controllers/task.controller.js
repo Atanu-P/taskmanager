@@ -51,9 +51,15 @@ exports.getAllTasks = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const filter = req.query.filter || "all";
+
+    let query = { user: userId }; //default query
+    if (filter !== "all") {
+      query.status = filter; // query with task filter
+    }
 
     // Find all tasks for the authenticated user
-    const tasks = await Task.find({ user: userId })
+    const tasks = await Task.find(query)
       .sort({ createdAt: -1 }) // Sort by creation date in descending order
       .skip(skip)
       .limit(limit);

@@ -7,6 +7,7 @@ import { deleteTask } from "./deleteTask.js";
 let currentPage = 1;
 const limit = 10;
 let loading = false;
+let currentFilter = "all"; // Default filter
 let updateFormDefaultValues = {};
 let taskId;
 
@@ -35,13 +36,15 @@ function addTaskToList(task, prepend = false) {
         </div>
 
         <div class="task-dates">
-            <span class="due-date">Due: ${task.dueDate?.split("T")[0] || "no due"}</span>
+            <span class="due-date" style="display: ${task.dueDate == null ? "none" : ""};">
+              <i class="bi bi-bell-fill"></i> ${new Date(task.dueDate).toLocaleDateString()}
+            </span>
             <span class="created-date">
-                Created: ${new Date(task.createdAt).toLocaleDateString()}
+              <i class="bi bi-calendar-week"></i> ${new Date(task.createdAt).toLocaleDateString()}
             </span>
         </div>
 
-        <button class="btn btn-sm btn-danger btn-delete">Delete</button> `;
+        <button class="btn btn-sm btn-danger btn-delete"><i class="bi bi-x-lg"></i></button> `;
   if (prepend) {
     taskList.prepend(taskItem);
   } else {
@@ -81,7 +84,7 @@ function addTaskToList(task, prepend = false) {
 
   // Add event listener to task item for opening update-task form modal
   taskItem.addEventListener("click", (e) => {
-    if (e.target.tagName !== "BUTTON" && e.target.tagName !== "INPUT") {
+    if (e.target.tagName !== "BUTTON" && e.target.tagName !== "INPUT" && e.target.tagName !== "I") {
       const updateTitle = document.getElementById("updateTitle");
       const updateDescription = document.getElementById("updateDescription");
       const updateDueDate = document.getElementById("updateDueDate");
@@ -89,7 +92,7 @@ function addTaskToList(task, prepend = false) {
       const updateTags = document.getElementById("updateTags");
 
       // const updateTaskButton = document.getElementById("updateTaskButton");
-
+      console.log(e.target.tagName);
       console.log("click", task);
       // Set the default values
       updateTitle.value = task.title;
@@ -117,13 +120,13 @@ function addTaskToList(task, prepend = false) {
 }
 
 // Function to fetch tasks with pagination
-async function fetchTasks(page, limit) {
+async function fetchTasks(page, limit, filter = "all") {
   if (loading) return;
 
   loading = true;
 
   try {
-    const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/all?page=${page}&limit=${limit}`, {
+    const response = await fetch(`${config.apiBaseUrl}api/v1/tasks/all?page=${page}&limit=${limit}&filter=${filter}`, {
       method: "GET",
       credentials: "include", // Include cookies in the request
     });
@@ -133,7 +136,13 @@ async function fetchTasks(page, limit) {
     if (response.ok || response.status === 200) {
       console.log("Tasks retrieved successfully:", responseData);
 
-      if (responseData.data.length <= 0) {
+      const taskList = document.getElementById("taskList");
+      if (page === 1) {
+        // Clear the task list for new filtered tasks
+        taskList.innerHTML = "";
+      }
+
+      if (responseData.data.length <= 0 && page === 1) {
         const noTasksMessage = document.getElementById("noTasksMessage");
         noTasksMessage.style.display = "block";
       } else {
@@ -150,13 +159,22 @@ async function fetchTasks(page, limit) {
 }
 
 // Initial fetch of 10 tasks
-fetchTasks(currentPage, limit);
+fetchTasks(currentPage, limit, currentFilter);
 
 // Infinite scrolling for tasks
 window.addEventListener("scroll", () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400 && !loading) {
-    fetchTasks(currentPage, limit);
+    fetchTasks(currentPage, limit, currentFilter);
   }
+});
+
+// Event listener for the task filter dropdown
+const taskFilter = document.getElementById("taskFilter");
+taskFilter.addEventListener("change", (e) => {
+  // console.log(e.target.value);
+  currentFilter = e.target.value;
+  currentPage = 1; // Reset to the first page
+  fetchTasks(currentPage, limit, currentFilter);
 });
 
 // Check if the Add-task-form exists
