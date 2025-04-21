@@ -3,6 +3,7 @@ import { createTask } from "./createTask.js";
 import { updateTaskStatus } from "./updateTaskStatus.js";
 import { updateTask } from "./updateTask.js";
 import { deleteTask } from "./deleteTask.js";
+import taskUI from "./taskUI.js";
 
 let currentPage = 1;
 const limit = 10;
@@ -23,32 +24,13 @@ function addTaskToList(task, prepend = false) {
   // taskItem.textContent = `${task.title} - ${task.description} - ${task.dueDate} - ${task.priority} - ${task.tags.join(', ')}`;
   taskItem.classList.add("list-group-item", "task-item");
   taskItem.setAttribute("id", task._id);
-  taskItem.innerHTML = `
-        <input type="checkbox" data-task-id="${task._id}" 
-        ${task.status === "completed" ? "checked" : ""}>
+  taskItem.innerHTML = taskUI(task);
 
-        <div class="task-info 
-        ${task.status === "completed" ? "completed-task" : ""}">
-            <p class="task-title">${task.title}</p>
-            <span class="badge 
-            bg-${task.priority == 1 ? "danger" : task.priority == 2 ? "warning" : "secondary"} rounded-pill ms-2">
-             ${task.priority == 1 ? "High" : task.priority == 2 ? "Medium" : "Low"}
-            </span>
-        </div>
-
-        <div class="task-dates">
-            <span class="due-date" style="display: ${task.dueDate == null ? "none" : ""};">
-              <i class="bi bi-bell-fill"></i> ${new Date(task.dueDate).toLocaleDateString()}
-            </span>
-            <span class="created-date">
-              <i class="bi bi-calendar-week"></i> ${new Date(task.createdAt).toLocaleDateString()}
-            </span>
-        </div>
-
-        <button class="btn btn-sm btn-danger btn-delete"><i class="bi bi-x-lg"></i></button> `;
   if (prepend) {
+    // task will be added at the top of the list when creating a new task
     taskList.prepend(taskItem);
   } else {
+    // task will be added at the bottom of the list when fetching tasks from server
     taskList.appendChild(taskItem);
   }
 
