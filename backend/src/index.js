@@ -4,7 +4,7 @@ const app = require("./app");
 
 // Load environment variables from .env file
 dotenv.config({
-  path: './.env'
+  path: "./.env",
 });
 
 // Connect to the database
@@ -14,6 +14,10 @@ connectDB();
 const PORT = process.env.PORT || 4000;
 
 // Start the server and listen on the defined port
-app.listen(PORT, () =>
-  console.log(`API Server is running on http://localhost:${PORT}`)
-);
+app.listen(PORT, () => {
+  if (process.env.MODE === "development") {
+    console.log(`API Server is running on http://localhost:${PORT}`);
+  } else {
+    console.log(`API Server is running on port : ${PORT} !!`);
+  }
+});
