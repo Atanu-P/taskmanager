@@ -4,7 +4,6 @@ import config from "./config.js";
 export default async function logout() {
   if (confirm("Are you sure you want to logout?")) {
     try {
-      sessionStorage.removeItem("loggedIn");
       const response = await fetch(`${config.apiBaseUrl}api/v1/users/logout`, {
         method: "POST",
         credentials: "include", // Include cookies in the request
